@@ -1,0 +1,19 @@
+#navbar {
+    display: flex;
+    justify-content: space-between;   
+    background-color: #C04F6C;
+    color: #F8F0E3;
+    margin: 1% 10%;
+    padding: 1% 3%;
+    border-radius: 10px;
+}
+
+.navbarComponent {
+    margin: 0;
+    background-color: transparent;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    border: transparent;
+    cursor: pointer;
+}
