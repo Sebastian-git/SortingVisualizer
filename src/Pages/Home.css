@@ -1,12 +1,11 @@
-* {
-    
+* { 
   background-color: #180A32;
 }
 
 #header {
     display: flex;
     flex-direction: column;
-    margin: 1% 10%;
+    margin: 2% 10% 0;
 }
 
 #title {
@@ -14,4 +13,25 @@
     margin: 1%;
     text-align: center;
     font-size: 45px;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+}
+
+#animation {
+  margin: 3% 18%;
+  height: 40vh;
+}
+
+#taskbar {
+  margin: 0% 18%;
+  background-color: #281247;
+  color: white;
+  text-align: center;
+}
+
+.taskbarChild {
+  background-color: #281247;
 }
