@@ -1,13 +1,12 @@
 import React, { Component } from "react"
 import * as Tone from 'tone'
 
-import animate from "../Components/Animation"
+import {animate} from "../Components/Animation"
 import Nav from "../Components/Navigation"
 
 import playImage from '../imgs/playImage.png'
 import restart from '../imgs/restartImage.png'
 import volumeImage from '../imgs/volumeImage.png'
-import sound from "../sounds/sound.mp3"
 import "./Home.css"
 
 class Home extends Component {
@@ -16,11 +15,12 @@ class Home extends Component {
     currentAlgorithm : "",
     isPlaying : false,
     isSorted : false,
-    maxBars : 10,
+    colors : [],
+    maxBars : 20,
     maxHeight : 30,
     heights : [],
     barUpdateDelay : 100,
-    soundDelay: 450,
+    soundDelay: 400,
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
@@ -32,19 +32,34 @@ class Home extends Component {
     this.getRandomHeights()
     this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
+    this.fillColors()
+  }
+
+  fillColors = () => {
+    let localColors = []
+    for (let i = 0; i <= this.state.maxBars*2; i++) {
+      localColors.push("#CC20A5")
+    }
+    this.setState({
+      colors : localColors,
+      tempColors : localColors
+    })
   }
 
   fillAudioNotes = () => {
     let notes = []
+    let total = 0
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 7; j++) {
         notes.push(this.state.audioNotes[j] + i.toString())
+        total ++
       }
     }
+    
     this.setState({
       audioNoteCombinations : notes,
-      audioNoteCombinationStart : (56 / 2) + this.state.maxBars
+      audioNoteCombinationStart : (total / 2) + this.state.maxBars
     })
   }
 
@@ -57,75 +72,36 @@ class Home extends Component {
       heights : tempHeights
     })
   }
-  
-  swap = async (data, indexOne, indexTwo) => {
-    if (!this.state.isPlaying) return
-    let temp = data[indexOne]
-    data[indexOne] = data[indexTwo]
-    data[indexTwo] = temp
-
-    let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - indexOne]
-
-    this.state.fmSynth.triggerAttackRelease(note, this.state.soundDelay / 1000);
-  }
-
-  quicksort = async (data, left, right) => {
-    if (!this.state.isPlaying) return
-    if (left < right) {
-      let index = await this.partition(data, left, right)
-      await this.quicksort(data, left, index - 1)
-      await this.quicksort(data, index + 1, right)
-    }
-  }
-
-  partition = async (data, left, right) => {
-    if (!this.state.isPlaying) return
-    let pivot = data[right]
-    let i = left - 1
-
-    for (let j = left; j < right; j++) {
-      if (data[j] < pivot) {
-        i++
-        this.swap(data, j, i)
-
-        this.setState({
-          heights : data
-        })
-        await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
-        
-      }
-    }
-    this.swap(data, i+1, right)
-    
-    await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
-    this.setState({
-      heights : data
-    })
-
-    return i + 1
-  }
 
   setCurrentAlgorithm = async (name) => {
     this.setState({
       currentAlgorithm : name
     })
+    this.restartClick()
   }
 
   playClick = async () => {
-
     let temp = this.state.isPlaying
     await this.setState({
       isPlaying : !temp
     })
 
-    if (this.state.currentAlgorithm === "quick" && !temp && !this.state.isSorted) {
+    if (!temp && !this.state.isSorted) {
       let tempHeights = this.state.heights
-      await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
+
+      if (this.state.currentAlgorithm === "quick") {
+        await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
+      }
+      else if (this.state.currentAlgorithm === "selection") {
+        await this.selectionsort(tempHeights)
+      }
+      
       this.setState({
         isPlaying : false,
         isSorted : true
       })
     }
+    
   }
 
   restartClick = async () => {
@@ -149,16 +125,109 @@ class Home extends Component {
 
   updateVolume = () => {
     let temp = new Tone.FMSynth().toDestination()
-
-    if (document.getElementById("volume").value == 0) {
+    if (document.getElementById("volume").value === 0) {
       temp.volume.value = -1000
     } else {
       temp.volume.value = document.getElementById("volume").value - 25
     }
-    
     this.setState({
       fmSynth : temp
     })
+  }
+
+  playSound = async (distance) => {
+    let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
+  
+    this.state.fmSynth.triggerAttackRelease(note, this.state.soundDelay / 1000);
+  }
+
+  updateColors = async (index, newColor) => {
+    let tempColors = this.state.colors
+    tempColors[index] = newColor
+    this.setState({
+      colors : tempColors
+    })
+    await new Promise(r => setTimeout(r, this.state.soundDelay / 100));
+    tempColors[index] = "#CC20A5"
+    this.setState({
+      colors : tempColors
+    })
+  }
+
+  updateHeight = async (data) => {
+    this.setState({
+      heights : data
+    })
+    await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+  }
+
+  // ALGORITHMS HERE, WILL BE MIGRATED TO INDIVIDUAL COMPONENTS SOON
+  
+  swap = async (data, indexOne, indexTwo) => {
+    if (!this.state.isPlaying) return
+    let temp = data[indexOne]
+    data[indexOne] = data[indexTwo]
+    data[indexTwo] = temp
+
+    await this.playSound(indexOne)
+  }
+
+  quicksort = async (data, left, right) => {
+    if (!this.state.isPlaying) return
+    if (left < right) {
+      let index = await this.partition(data, left, right)
+      await this.quicksort(data, left, index - 1)
+      await this.quicksort(data, index + 1, right)
+    }
+  }
+
+  partition = async (data, left, right) => {
+    let pivot = data[right]
+    let i = left - 1
+
+    for (let j = left; j < right; j++) {
+      if (!this.state.isPlaying) return
+      this.updateColors(j, "#FFFFFF")
+      if (data[j] < pivot) {
+        i++
+        await this.updateColors(i, "#00FF00")
+        await this.updateColors(j, "#FF0000")
+        this.swap(data, j, i)
+        await this.updateHeight(data)
+        
+      }
+    }
+    this.swap(data, i+1, right)
+    await this.updateHeight(data)
+
+    return i + 1
+  }
+
+  selectionsort = async (data) => {
+    let sorted = []
+    let unsorted = data
+    let minIndex = 0
+
+    while (unsorted.length > 0) {
+      minIndex = 0
+      for (let i = 0; i < unsorted.length; i++) {
+        if (!this.state.isPlaying) return
+        await this.updateColors(i, "#FFFFFF")
+        await this.playSound(data[i])
+        if (unsorted[i] <= unsorted[minIndex]) {
+          minIndex = i
+        }
+      }
+
+      await this.updateColors(minIndex, "#FF0000")
+      
+      sorted.push(unsorted.splice(minIndex, 1))
+      data = sorted.concat(unsorted)
+
+      await this.updateHeight(data)
+      await this.updateColors(sorted.length - 1, "#00FF00")
+
+    }
   }
 
   render() {
@@ -172,7 +241,7 @@ class Home extends Component {
    
         <div id="content">
           <div id="animation">
-            {animate(this.state.maxBars, this.state.heights)}
+            {animate(this.state.maxBars, this.state.heights, this.state.colors)}
           </div>
           <div id="taskbar">
             <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.restartClick()} />
