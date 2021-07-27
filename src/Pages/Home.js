@@ -13,9 +13,10 @@ class Home extends Component {
   state = {
     currentAlgorithm : "",
     isPlaying : false,
-    maxBars : 30,
+    maxBars : 20,
     maxHeight : 30,
-    heights : []
+    heights : [],
+    barUpdateDelay : 30
   }
 
   componentDidMount() {
@@ -34,6 +35,7 @@ class Home extends Component {
   }
   
   swap = (data, indexOne, indexTwo) => {
+    if (!this.state.isPlaying) return
     let temp = data[indexOne]
     data[indexOne] = data[indexTwo]
     data[indexTwo] = temp
@@ -56,16 +58,18 @@ class Home extends Component {
         i++
         this.swap(data, j, i)
     
-        await new Promise(r => setTimeout(r, 100));
-        animate(this.state.maxBars, data)
-        console.log("called")
+        await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+        this.setState({
+          heights : data
+        })
       }
     }
     this.swap(data, i+1, right)
     
-    await new Promise(r => setTimeout(r, 100));
-    animate(this.state.maxBars, data)
-    console.log("called")
+    await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+    this.setState({
+      heights : data
+    })
 
     return i + 1
   }
@@ -74,23 +78,25 @@ class Home extends Component {
     this.setState({
       currentAlgorithm : name
     })
-    if (name == "quick") {
-      await this.quicksort(this.state.heights, 0, this.state.heights.length - 1)
+  }
+
+  playClick = async () => {
+
+    this.state.isPlaying = !this.state.isPlaying
+    console.log(this.state.currentAlgorithm, this.state.isPlaying)
+
+    if (this.state.currentAlgorithm == "quick") {
+      let tempHeights = this.state.heights
+      await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
+      console.log("done")
     }
   }
 
-  playClick = () => {
-    let prevState = this.state.isPlaying
+  restartClick = async () => {
     this.setState({
-      isPlaying : !prevState
+      isPlaying : false
     })
-    console.log(this.state.currentAlgorithm)
-  }
-
-  restartClick = () => {
     this.getRandomHeights()
-
-    animate(this.state.maxBars, this.state.heights)
   }
 
   render() {
