@@ -1,20 +1,29 @@
-import React from "react"
+import React, { Component } from "react"
 import "./Navigation.css"
 
-function Navigation() {
-  return (
+class Navigation extends Component {
+
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+
+    return (
+
     <React.Fragment>
 
       <div id="navbar">
-        <button class="navbarComponent">Quick</button>
-        <button class="navbarComponent">Selection</button>
-        <button class="navbarComponent">Bubble</button>
-        <button class="navbarComponent">Insertion</button>
-        <button class="navbarComponent">Merge</button>
+        <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("quick")}>Quick</button>
+        <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("selection")}>Selection</button>
+        <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("bubble")}>Bubble</button>
+        <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("insertion")}>Insertion</button>
+        <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("merge")}>Merge</button>
       </div>
 
     </React.Fragment>
-  );
+    )
+  }
 }
 
 export default Navigation;

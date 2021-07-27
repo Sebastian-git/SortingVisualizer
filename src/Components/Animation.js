@@ -1,10 +1,8 @@
-import React, { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import React, { useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
 
 function Box(props) {
-  // This reference will give us direct access to the mesh
   const mesh = useRef()
-
   return (
     <mesh {...props} ref = {mesh} >
       <planeGeometry args={props.args} />
@@ -13,15 +11,11 @@ function Box(props) {
   )
 }
 
-export default function animation() {
-  
+export default function animate(maxBars, heights) {
   let boxes = []
-  let maxBars = 36
-  let maxHeight = 30;
 
-  for (let i = -maxBars; i <= maxBars; i += 1.5) {
-    boxes.push(<Box position={[i, 0, -5]} args={[1, Math.random() * maxHeight, 1]} />)
-    console.log(i)
+  for (let i = -maxBars; i <= maxBars; i++) {
+    boxes.push(<Box position={[i, 0, -5]} args={[1, heights[i+maxBars], 1]} />)
   }
 
   return (

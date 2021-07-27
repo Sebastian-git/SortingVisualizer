@@ -12,7 +12,7 @@
     color: #F8F0E3;
     margin: 1%;
     text-align: center;
-    font-size: 45px;
+    font-size: 6vw;
 }
 
 #content {
@@ -27,11 +27,15 @@
 
 #taskbar {
   margin: 0% 18%;
+  padding: 1vw;
   background-color: #281247;
   color: white;
   text-align: center;
+  display: flex;
+  justify-content: space-around;
 }
 
 .taskbarChild {
   background-color: #281247;
+  cursor: pointer;
 }
