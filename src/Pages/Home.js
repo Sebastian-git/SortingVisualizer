@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import * as Tone from 'tone'
 
 import animate from "../Components/Animation"
 import Nav from "../Components/Navigation"
@@ -21,12 +22,30 @@ class Home extends Component {
     barUpdateDelay : 100,
     soundDelay: 450,
     audioControlToggle : false,
-    audioVolume : 1
+    audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
+    audioNoteCombinations : [],
+    audioNoteCombinationStart : 0,
+    fmSynth : new Tone.FMSynth().toDestination()
   }
 
   componentDidMount() {
     this.getRandomHeights()
     this.setCurrentAlgorithm("quick")
+    this.fillAudioNotes()
+  }
+
+  fillAudioNotes = () => {
+    let notes = []
+
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 7; j++) {
+        notes.push(this.state.audioNotes[j] + i.toString())
+      }
+    }
+    this.setState({
+      audioNoteCombinations : notes,
+      audioNoteCombinationStart : (56 / 2) + this.state.maxBars
+    })
   }
 
   getRandomHeights = () => {
@@ -45,14 +64,13 @@ class Home extends Component {
     data[indexOne] = data[indexTwo]
     data[indexTwo] = temp
 
-    let soundEffect = new Audio(sound);
-    soundEffect.volume = (indexOne / (this.state.maxBars * 2)) * this.state.audioVolume
-    soundEffect.play();
-    await new Promise(r => setTimeout(r, this.state.soundDelay));
-    soundEffect.pause();
+    let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - indexOne]
+
+    this.state.fmSynth.triggerAttackRelease(note, this.state.soundDelay / 1000);
   }
 
   quicksort = async (data, left, right) => {
+    if (!this.state.isPlaying) return
     if (left < right) {
       let index = await this.partition(data, left, right)
       await this.quicksort(data, left, index - 1)
@@ -61,6 +79,7 @@ class Home extends Component {
   }
 
   partition = async (data, left, right) => {
+    if (!this.state.isPlaying) return
     let pivot = data[right]
     let i = left - 1
 
@@ -117,7 +136,7 @@ class Home extends Component {
     this.getRandomHeights()
   }
 
-  volumeClick = () => {
+  volumeClick = async () => {
     let elem = document.getElementById("volume")
     let toggle = this.state.audioControlToggle
     if (!toggle) elem.style.opacity = 100
@@ -129,8 +148,16 @@ class Home extends Component {
   }
 
   updateVolume = () => {
+    let temp = new Tone.FMSynth().toDestination()
+
+    if (document.getElementById("volume").value == 0) {
+      temp.volume.value = -1000
+    } else {
+      temp.volume.value = document.getElementById("volume").value - 25
+    }
+    
     this.setState({
-      audioVolume : (document.getElementById("volume").value / 100)
+      fmSynth : temp
     })
   }
 
@@ -153,7 +180,7 @@ class Home extends Component {
             <img class="taskbarChild" src={volumeImage} alt="Volume" onClick={() => this.volumeClick()} />
           </div>
           <div id="volumeContainer">
-            <input type="range" id="volume" min="0" max="100" onClick={() => this.updateVolume()}></input>
+            <input type="range" id="volume" min="0" max="20" onClick={() => this.updateVolume()}></input>
           </div>
         </div>
       </React.Fragment>
