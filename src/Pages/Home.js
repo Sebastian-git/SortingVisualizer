@@ -53,7 +53,7 @@ class Home extends Component {
     let pivot = data[right]
     let i = left - 1
 
-    for (let j = left; j < right - 1; j++) {
+    for (let j = left; j < right; j++) {
       if (data[j] < pivot) {
         i++
         this.swap(data, j, i)
@@ -81,13 +81,17 @@ class Home extends Component {
   }
 
   playClick = async () => {
+    let temp = this.state.isPlaying
+    this.setState({
+      isPlaying : !temp
+    })
 
-    this.state.isPlaying = !this.state.isPlaying
-    console.log(this.state.currentAlgorithm, this.state.isPlaying)
-
-    if (this.state.currentAlgorithm == "quick") {
+    if (this.state.currentAlgorithm == "quick" && temp == false) {
       let tempHeights = this.state.heights
       await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
+      this.setState({
+        isPlaying : false
+      })
       console.log("done")
     }
   }
