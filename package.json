@@ -1,5 +1,5 @@
 {
-  "homepage": "http://Sebastian-git.github.io/VisualSorting",
+  "homepage": "http://Sebastian-git.github.io",
   "name": "test",
   "version": "0.1.0",
   "private": true,
@@ -16,6 +16,7 @@
     "react-scripts": "4.0.3",
     "react-three-fiber": "^5.3.14",
     "three": "^0.124.0",
+    "use-sound": "^4.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

@@ -39,3 +39,12 @@
   background-color: #281247;
   cursor: pointer;
 }
+
+#volumeContainer {
+  display: flex;
+  margin: 3vh auto;
+}
+
+#volume {
+  opacity: 0;
+}

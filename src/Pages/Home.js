@@ -3,9 +3,10 @@ import React, { Component } from "react"
 import animate from "../Components/Animation"
 import Nav from "../Components/Navigation"
 
-import playImage from '../imgs/playImage.png';
-import restart from '../imgs/restartImage.png';
-import volumeImage from '../imgs/volumeImage.png';
+import playImage from '../imgs/playImage.png'
+import restart from '../imgs/restartImage.png'
+import volumeImage from '../imgs/volumeImage.png'
+import sound from "../sounds/sound.mp3"
 import "./Home.css"
 
 class Home extends Component {
@@ -13,10 +14,14 @@ class Home extends Component {
   state = {
     currentAlgorithm : "",
     isPlaying : false,
-    maxBars : 20,
+    isSorted : false,
+    maxBars : 10,
     maxHeight : 30,
     heights : [],
-    barUpdateDelay : 30
+    barUpdateDelay : 100,
+    soundDelay: 450,
+    audioControlToggle : false,
+    audioVolume : 1
   }
 
   componentDidMount() {
@@ -34,11 +39,17 @@ class Home extends Component {
     })
   }
   
-  swap = (data, indexOne, indexTwo) => {
+  swap = async (data, indexOne, indexTwo) => {
     if (!this.state.isPlaying) return
     let temp = data[indexOne]
     data[indexOne] = data[indexTwo]
     data[indexTwo] = temp
+
+    let soundEffect = new Audio(sound);
+    soundEffect.volume = (indexOne / (this.state.maxBars * 2)) * this.state.audioVolume
+    soundEffect.play();
+    await new Promise(r => setTimeout(r, this.state.soundDelay));
+    soundEffect.pause();
   }
 
   quicksort = async (data, left, right) => {
@@ -57,11 +68,12 @@ class Home extends Component {
       if (data[j] < pivot) {
         i++
         this.swap(data, j, i)
-    
-        await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+
         this.setState({
           heights : data
         })
+        await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+        
       }
     }
     this.swap(data, i+1, right)
@@ -81,31 +93,51 @@ class Home extends Component {
   }
 
   playClick = async () => {
+
     let temp = this.state.isPlaying
-    this.setState({
+    await this.setState({
       isPlaying : !temp
     })
 
-    if (this.state.currentAlgorithm == "quick" && temp == false) {
+    if (this.state.currentAlgorithm === "quick" && !temp && !this.state.isSorted) {
       let tempHeights = this.state.heights
       await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
       this.setState({
-        isPlaying : false
+        isPlaying : false,
+        isSorted : true
       })
-      console.log("done")
     }
   }
 
   restartClick = async () => {
     this.setState({
-      isPlaying : false
+      isPlaying : false,
+      isSorted : false
     })
     this.getRandomHeights()
+  }
+
+  volumeClick = () => {
+    let elem = document.getElementById("volume")
+    let toggle = this.state.audioControlToggle
+    if (!toggle) elem.style.opacity = 100
+    else elem.style.opacity = 0
+    
+    this.setState({
+      audioControlToggle : !toggle
+    })
+  }
+
+  updateVolume = () => {
+    this.setState({
+      audioVolume : (document.getElementById("volume").value / 100)
+    })
   }
 
   render() {
     return (
       <React.Fragment>
+
         <div id="header">
           <h1 id="title">Sorting Visualizer</h1>
           <Nav setCurrentAlgorithm={this.setCurrentAlgorithm} />
@@ -118,7 +150,10 @@ class Home extends Component {
           <div id="taskbar">
             <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.restartClick()} />
             <img class="taskbarChild" src={playImage} alt="Play" onClick={() => this.playClick()} />
-            <img class="taskbarChild" src={volumeImage} alt="Volume" />
+            <img class="taskbarChild" src={volumeImage} alt="Volume" onClick={() => this.volumeClick()} />
+          </div>
+          <div id="volumeContainer">
+            <input type="range" id="volume" min="0" max="100" onClick={() => this.updateVolume()}></input>
           </div>
         </div>
       </React.Fragment>
