@@ -19,13 +19,13 @@ class Home extends Component {
     maxBars : 20,
     maxHeight : 30,
     heights : [],
-    barUpdateDelay : 100,
-    soundDelay: 400,
+    barUpdateDelay : 10, // 100
+    soundDelay: 10, // 500
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
     audioNoteCombinationStart : 0,
-    fmSynth : new Tone.FMSynth().toDestination()
+    fmSynth : new Tone.AMSynth().toDestination()
   }
 
   componentDidMount() {
@@ -95,6 +95,12 @@ class Home extends Component {
       else if (this.state.currentAlgorithm === "selection") {
         await this.selectionsort(tempHeights)
       }
+
+      let delay = 2000
+      for (let i = 0; i < this.state.heights.length; i++) {
+        await this.playSound(i, delay)
+        await this.updateColors(i, "#FFFFFF", delay)
+      }
       
       this.setState({
         isPlaying : false,
@@ -124,7 +130,7 @@ class Home extends Component {
   }
 
   updateVolume = () => {
-    let temp = new Tone.FMSynth().toDestination()
+    let temp = new Tone.AMSynth().toDestination()
     if (document.getElementById("volume").value === 0) {
       temp.volume.value = -1000
     } else {
@@ -135,19 +141,21 @@ class Home extends Component {
     })
   }
 
-  playSound = async (distance) => {
+  playSound = async (distance, delay) => {
+    if (!delay) delay = 0
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
   
-    this.state.fmSynth.triggerAttackRelease(note, this.state.soundDelay / 1000);
+    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/10)) / 1000));
   }
 
-  updateColors = async (index, newColor) => {
+  updateColors = async (index, newColor, delay) => {
+    if (!delay) delay = 0
     let tempColors = this.state.colors
     tempColors[index] = newColor
     this.setState({
       colors : tempColors
     })
-    await new Promise(r => setTimeout(r, this.state.soundDelay / 100));
+    await new Promise(r => setTimeout(r, ((this.state.soundDelay + delay ) / 100)));
     tempColors[index] = "#CC20A5"
     this.setState({
       colors : tempColors
@@ -207,7 +215,7 @@ class Home extends Component {
     let sorted = []
     let unsorted = data
     let minIndex = 0
-
+    
     while (unsorted.length > 0) {
       minIndex = 0
       for (let i = 0; i < unsorted.length; i++) {
@@ -219,7 +227,7 @@ class Home extends Component {
         }
       }
 
-      await this.updateColors(minIndex, "#FF0000")
+      await this.updateColors(sorted.length + minIndex, "#FF0000")
       
       sorted.push(unsorted.splice(minIndex, 1))
       data = sorted.concat(unsorted)
