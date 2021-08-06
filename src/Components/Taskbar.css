@@ -3,9 +3,8 @@
     padding: 1vw;
     background-color: #281247;
     color: white;
-    text-align: center;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .taskbarChild {
@@ -32,6 +31,9 @@
 }
 
 #rightTaskbar {
+    background-color: #281247;
+}
 
+#leftTaskbar {
     background-color: #281247;
 }

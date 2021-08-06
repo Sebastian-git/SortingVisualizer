@@ -9,15 +9,15 @@ import fullscreenImage from "../imgs/fullscreenImage.png"
 
 class Navigation extends Component {
 
-  render() {
+    render() {
     return (
         <React.Fragment>
 
             <div id="taskbar">
-                <div id="leftTaskbar">
+                <div id="leftTaskbar" onMouseOver={() => this.props.volumeHover()} onMouseLeave={() => this.props.volumeNotHover()} >
                     <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.props.restartClick()} />
                     <img class="taskbarChild" src={playImage} alt="Play" onClick={() => this.props.playClick()} />
-                    <img class="taskbarChild" src={volumeImage} alt="Volume" onClick={() => this.props.volumeClick()} />
+                    <img class="taskbarChild" src={volumeImage} alt="Volume" />
                     <div id="volumeContainer">
                         <input type="range" id="volume" min="0" max="20" onClick={() => this.props.updateVolume()}></input>
                     </div>
@@ -30,7 +30,7 @@ class Navigation extends Component {
             
         </React.Fragment>
     )
-  }
-}
+    }
+    }
 
-export default Navigation;
+    export default Navigation;

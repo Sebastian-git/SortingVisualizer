@@ -31,6 +31,7 @@ class Home extends Component {
     this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.fillColors()
+   // this.handleImageHover()
   }
 
   fillColors = () => {
@@ -102,6 +103,8 @@ class Home extends Component {
         await this.selectionsort(tempHeights)
       }
       
+      if (this.state.isPlaying === true) this.playAllBars()
+      
       this.setState({
         isPlaying : false,
         isSorted : true
@@ -118,11 +121,20 @@ class Home extends Component {
     this.getRandomHeights()
   }
 
-  volumeClick = async () => {
+  volumeHover = async () => {
     let elem = document.getElementById("volume")
     let toggle = this.state.audioControlToggle
-    if (!toggle) elem.style.opacity = 100
-    else elem.style.opacity = 0
+    elem.style.opacity = 100
+    
+    this.setState({
+      audioControlToggle : !toggle
+    })
+  }
+
+  volumeNotHover = async () => {
+    let elem = document.getElementById("volume")
+    let toggle = this.state.audioControlToggle
+    elem.style.opacity = 0
     
     this.setState({
       audioControlToggle : !toggle
@@ -145,7 +157,7 @@ class Home extends Component {
     if (!delay) delay = 0
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
   
-    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/100)) / 1000));
+    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/100)) / 100));
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -253,7 +265,7 @@ class Home extends Component {
             {animate(this.state.maxBars, this.state.heights, this.state.colors)}
           </div>
           
-          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeClick={this.volumeClick} updateVolume={this.updateVolume} />
+          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} />
         </div>
       </React.Fragment>
     );
