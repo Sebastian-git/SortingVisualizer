@@ -20,6 +20,10 @@
     float:left;
 }
 
+#rightTaskbar {
+    background-color: #281247;
+}
+
 #volumeContainer {
     background-color: #281247;
     display: flex;
@@ -28,12 +32,4 @@
 #volume {
     background-color: #281247;
     opacity: 0;
-}
-
-#rightTaskbar {
-    background-color: #281247;
-}
-
-#leftTaskbar {
-    background-color: #281247;
 }

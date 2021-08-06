@@ -85,6 +85,7 @@ class Home extends Component {
       await this.playSound(i, delay)
       await this.updateColors(i, "#FFFFFF", delay)
     }
+    this.state.fmSynth.triggerRelease()
   }
 
   playClick = async () => {
@@ -109,6 +110,8 @@ class Home extends Component {
         isPlaying : false,
         isSorted : true
       })
+    } else {
+      this.state.fmSynth.triggerRelease()
     }
     
   }
@@ -141,23 +144,29 @@ class Home extends Component {
     })
   }
 
-  updateVolume = () => {
+  updateVolume = async () => {
+    this.state.fmSynth.triggerRelease()
     let temp = new Tone.AMSynth().toDestination()
-    if (document.getElementById("volume").value === 0) {
+    let volumeLevel = document.getElementById("volume").value
+
+    if (volumeLevel === '0') {
       temp.volume.value = -1000
     } else {
-      temp.volume.value = document.getElementById("volume").value - 25
+      temp.volume.value = volumeLevel - 20
     }
+    
     this.setState({
-      fmSynth : temp
+      fmSynth : temp,
     })
   }
 
   playSound = async (distance, delay) => {
+    this.state.fmSynth.triggerRelease()
     if (!delay) delay = 0
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
-  
-    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/100)) / 100));
+    
+    await new Promise(r => setTimeout(r, 10));
+    this.state.fmSynth.triggerAttackRelease(note, 30);
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -167,7 +176,9 @@ class Home extends Component {
     this.setState({
       colors : tempColors
     })
-    await new Promise(r => setTimeout(r, ((this.state.soundDelay + delay ) / 100)));
+    
+    await new Promise(r => setTimeout(r, 30));
+    
     tempColors[index] = "#CC20A5"
     this.setState({
       colors : tempColors
@@ -178,7 +189,8 @@ class Home extends Component {
     this.setState({
       heights : data
     })
-    await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+    //await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
+    await new Promise(r => setTimeout(r, 30));
   }
 
   // ALGORITHMS HERE, WILL BE MIGRATED TO INDIVIDUAL COMPONENTS SOON
