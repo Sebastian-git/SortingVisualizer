@@ -1,0 +1,37 @@
+#taskbar {
+    margin: 0 25%;
+    padding: 1vw;
+    background-color: #281247;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+}
+
+.taskbarChild {
+    background-color: #281247;
+    cursor: pointer;
+    height: 35px;
+    object-fit: cover;
+}
+
+#leftTaskbar {
+    background-color: #281247;
+    display: flex;
+    float:left;
+}
+
+#volumeContainer {
+    background-color: #281247;
+    display: flex;
+}
+
+#volume {
+    background-color: #281247;
+    opacity: 0;
+}
+
+#rightTaskbar {
+
+    background-color: #281247;
+}

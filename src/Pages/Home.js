@@ -2,11 +2,9 @@ import React, { Component } from "react"
 import * as Tone from 'tone'
 
 import {animate} from "../Components/Animation"
-import Nav from "../Components/Navigation"
+import Navbar from "../Components/Navigation"
+import Taskbar from "../Components/Taskbar"
 
-import playImage from '../imgs/playImage.png'
-import restart from '../imgs/restartImage.png'
-import volumeImage from '../imgs/volumeImage.png'
 import "./Home.css"
 
 class Home extends Component {
@@ -19,8 +17,8 @@ class Home extends Component {
     maxBars : 20,
     maxHeight : 30,
     heights : [],
-    barUpdateDelay : 10, // 100
-    soundDelay: 10, // 500
+    barUpdateDelay : 100, // 100
+    soundDelay: 500, // 500
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
@@ -80,6 +78,14 @@ class Home extends Component {
     this.restartClick()
   }
 
+  playAllBars = async () => {
+    let delay = 2000
+    for (let i = 0; i < this.state.heights.length; i++) {
+      await this.playSound(i, delay)
+      await this.updateColors(i, "#FFFFFF", delay)
+    }
+  }
+
   playClick = async () => {
     let temp = this.state.isPlaying
     await this.setState({
@@ -90,16 +96,10 @@ class Home extends Component {
       let tempHeights = this.state.heights
 
       if (this.state.currentAlgorithm === "quick") {
-        await this.quicksort(tempHeights, 0, this.state.heights.length - 1)
+        await this.quicksort(tempHeights, 0, tempHeights.length - 1)
       }
       else if (this.state.currentAlgorithm === "selection") {
         await this.selectionsort(tempHeights)
-      }
-
-      let delay = 2000
-      for (let i = 0; i < this.state.heights.length; i++) {
-        await this.playSound(i, delay)
-        await this.updateColors(i, "#FFFFFF", delay)
       }
       
       this.setState({
@@ -145,7 +145,7 @@ class Home extends Component {
     if (!delay) delay = 0
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
   
-    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/10)) / 1000));
+    this.state.fmSynth.triggerAttackRelease(note, ((this.state.soundDelay + (delay/100)) / 1000));
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -178,6 +178,7 @@ class Home extends Component {
     data[indexTwo] = temp
 
     await this.playSound(indexOne)
+    await this.playSound(indexTwo)
   }
 
   quicksort = async (data, left, right) => {
@@ -244,21 +245,15 @@ class Home extends Component {
 
         <div id="header">
           <h1 id="title">Sorting Visualizer</h1>
-          <Nav setCurrentAlgorithm={this.setCurrentAlgorithm} />
+          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} />
         </div>
    
         <div id="content">
           <div id="animation">
             {animate(this.state.maxBars, this.state.heights, this.state.colors)}
           </div>
-          <div id="taskbar">
-            <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.restartClick()} />
-            <img class="taskbarChild" src={playImage} alt="Play" onClick={() => this.playClick()} />
-            <img class="taskbarChild" src={volumeImage} alt="Volume" onClick={() => this.volumeClick()} />
-          </div>
-          <div id="volumeContainer">
-            <input type="range" id="volume" min="0" max="20" onClick={() => this.updateVolume()}></input>
-          </div>
+          
+          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeClick={this.volumeClick} updateVolume={this.updateVolume} />
         </div>
       </React.Fragment>
     );
