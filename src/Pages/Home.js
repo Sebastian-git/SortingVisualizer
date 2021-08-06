@@ -31,7 +31,6 @@ class Home extends Component {
     this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.fillColors()
-   // this.handleImageHover()
   }
 
   fillColors = () => {
@@ -110,13 +109,14 @@ class Home extends Component {
         isPlaying : false,
         isSorted : true
       })
-    } else {
-      this.state.fmSynth.triggerRelease()
     }
+
+    this.state.fmSynth.triggerRelease()
     
   }
 
   restartClick = async () => {
+    this.state.fmSynth.triggerRelease()
     this.setState({
       isPlaying : false,
       isSorted : false
@@ -189,7 +189,6 @@ class Home extends Component {
     this.setState({
       heights : data
     })
-    //await new Promise(r => setTimeout(r, this.state.barUpdateDelay));
     await new Promise(r => setTimeout(r, 30));
   }
 
@@ -245,7 +244,7 @@ class Home extends Component {
       minIndex = 0
       for (let i = 0; i < unsorted.length; i++) {
         if (!this.state.isPlaying) return
-        await this.updateColors(i, "#FFFFFF")
+        await this.updateColors(i+sorted.length, "#FFFFFF")
         await this.playSound(data[i])
         if (unsorted[i] <= unsorted[minIndex]) {
           minIndex = i
