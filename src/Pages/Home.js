@@ -1,9 +1,10 @@
 import React, { Component } from "react"
 import * as Tone from 'tone'
 
-import {animate} from "../Components/Animation"
+import { animate } from "../Components/Animation"
 import Navbar from "../Components/Navigation"
 import Taskbar from "../Components/Taskbar"
+import { settingsModal, speedModal } from "../Components/Modals"
 
 import "./Home.css"
 
@@ -13,17 +14,20 @@ class Home extends Component {
     currentAlgorithm : "",
     isPlaying : false,
     isSorted : false,
-    colors : [],
     maxBars : 20,
     maxHeight : 30,
+    transitionDelay : 30,
+    colors : [],
     heights : [],
-    barUpdateDelay : 100, // 100
-    soundDelay: 500, // 500
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
     audioNoteCombinationStart : 0,
-    fmSynth : new Tone.AMSynth().toDestination()
+    fmSynth : new Tone.AMSynth().toDestination(),
+    showModal : false,
+    showSpeedModal : false,
+    showTuneModal : false,
+    currentSpeed : "Medium"
   }
 
   componentDidMount() {
@@ -81,7 +85,7 @@ class Home extends Component {
   playAllBars = async () => {
     let delay = 2000
     for (let i = 0; i < this.state.heights.length; i++) {
-      await this.playSound(i, delay)
+      await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
     this.state.fmSynth.triggerRelease()
@@ -160,13 +164,12 @@ class Home extends Component {
     })
   }
 
-  playSound = async (distance, delay) => {
+  playSound = async (distance) => {
+    await new Promise(r => setTimeout(r, 10));
     this.state.fmSynth.triggerRelease()
-    if (!delay) delay = 0
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
     
-    await new Promise(r => setTimeout(r, 10));
-    this.state.fmSynth.triggerAttackRelease(note, 30);
+    this.state.fmSynth.triggerAttackRelease(note, 10);
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -177,7 +180,7 @@ class Home extends Component {
       colors : tempColors
     })
     
-    await new Promise(r => setTimeout(r, 30));
+    await new Promise(r => setTimeout(r, this.state.transitionDelay));
     
     tempColors[index] = "#CC20A5"
     this.setState({
@@ -189,7 +192,7 @@ class Home extends Component {
     this.setState({
       heights : data
     })
-    await new Promise(r => setTimeout(r, 30));
+    await new Promise(r => setTimeout(r, this.state.transitionDelay));
   }
 
   // ALGORITHMS HERE, WILL BE MIGRATED TO INDIVIDUAL COMPONENTS SOON
@@ -199,9 +202,6 @@ class Home extends Component {
     let temp = data[indexOne]
     data[indexOne] = data[indexTwo]
     data[indexTwo] = temp
-
-    await this.playSound(indexOne)
-    await this.playSound(indexTwo)
   }
 
   quicksort = async (data, left, right) => {
@@ -219,7 +219,8 @@ class Home extends Component {
 
     for (let j = left; j < right; j++) {
       if (!this.state.isPlaying) return
-      this.updateColors(j, "#FFFFFF")
+      await this.updateColors(j, "#FFFFFF")
+      await this.playSound(data[j])
       if (data[j] < pivot) {
         i++
         await this.updateColors(i, "#00FF00")
@@ -242,27 +243,85 @@ class Home extends Component {
     
     while (unsorted.length > 0) {
       minIndex = 0
-      for (let i = 0; i < unsorted.length; i++) {
+      for (let i = 0; i < data.length; i++) {
         if (!this.state.isPlaying) return
-        await this.updateColors(i+sorted.length, "#FFFFFF")
         await this.playSound(data[i])
+        await this.updateColors(i, "#FFFFFF")
         if (unsorted[i] <= unsorted[minIndex]) {
           minIndex = i
         }
       }
-
-      await this.updateColors(sorted.length + minIndex, "#FF0000")
       
       sorted.push(unsorted.splice(minIndex, 1))
       data = sorted.concat(unsorted)
 
       await this.updateHeight(data)
-      await this.updateColors(sorted.length - 1, "#00FF00")
+    }
+  }
 
+  closeModal = () => {
+    this.setState({
+      showModal : false,
+      showSpeedModal : false,
+      showTuneModal : false
+    })
+  }
+
+  openModal = () => {
+    this.setState({
+      showModal : true
+    })
+  }
+
+  setModal = (name) => {
+    if (name === "general") {
+      this.setState({
+        showModal : true,
+        showSpeedModal : false,
+        showTuneModal : false
+      })
+    } else if (name === "speed") {
+      this.setState({
+        showModal : false,
+        showSpeedModal : true,
+        showTuneModal : false
+      })
+    } else if (name === "tune") {
+      this.setState({
+        showModal : false,
+        showSpeedModal : false,
+        showTuneModal : true
+      })
+    }
+  }
+
+  setSpeed = (speed) => {
+    this.setState({
+      showModal : false,
+      showSpeedModal : false,
+      showTuneModal : false
+    })
+    if (speed === "fast") {
+      this.setState({
+        transitionDelay : 1,
+        currentSpeed : "Fast"
+      })
+    }
+    if (speed === "medium") {
+      this.setState({
+        transitionDelay : 50,
+        currentSpeed : "Medium"
+      })
+    } else if (speed === "slow") {
+      this.setState({
+        transitionDelay : 200,
+        currentSpeed : "Slow"
+      })
     }
   }
 
   render() {
+
     return (
       <React.Fragment>
 
@@ -275,8 +334,16 @@ class Home extends Component {
           <div id="animation">
             {animate(this.state.maxBars, this.state.heights, this.state.colors)}
           </div>
+
+          <div id="settingsModal">
+            {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed)}
+          </div>
           
-          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} />
+          <div id="speedModal">
+            {speedModal(this.state.showSpeedModal, this.closeModal, this.setModal, this.setSpeed)}
+          </div>
+          
+          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
         </div>
       </React.Fragment>
     );

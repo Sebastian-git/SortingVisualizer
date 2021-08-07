@@ -1,0 +1,88 @@
+#modalContents {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Roboto";
+}
+
+#modalSpeed {
+  background-color: #161616;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#modalTune {
+  background-color: #161616;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1vh 0 0 0;
+}
+
+.modalLabel {
+  background-color: #161616;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalButton {
+  background-color: #161616;
+  color: white;
+  padding: 0 0 0 4vw;
+  border: none;
+  font-size: 10;
+  cursor: pointer;
+}
+
+
+
+#speedModalContents {
+  background-color: #161616;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Roboto";
+}
+
+#speedModalTop {
+  background-color: #161616;
+  display: flex;
+  padding: 0 0 10px;
+}
+
+#speedModalBottom {
+  background-color: #161616;
+  display: flex;
+  flex-direction: column;
+}
+
+.speedModalButton {
+  background-color: #161616;
+  color: white;
+  border: none;
+  font-size: 10;
+  cursor: pointer;
+  margin: 5px 0
+}
+
+#speedModalLabel {
+  background-color: #161616;
+  color: white;
+  border: none;
+  font-size: 10;
+  cursor: pointer;
+  margin: 0 10px 0 0;
+}
+
+#speedModalBack {
+  background-color: #161616;
+  color: white;
+  border: none;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  padding: 0 10px 0 0;
+}

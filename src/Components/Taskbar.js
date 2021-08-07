@@ -19,11 +19,11 @@ class Navigation extends Component {
                     <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.props.restartClick()} />
                     <img class="taskbarChild" src={volumeImage} alt="Volume" />
                     <div id="volumeContainer">
-                        <input type="range" id="volume" min="0" max="20" onClick={() =>this.props.updateVolume()}></input>
+                        <input type="range" id="volume" min="0" max="20" onClick={() => this.props.updateVolume()}></input>
                     </div>
                 </div>
                 <div id="rightTaskbar">
-                    <img class="taskbarChild" src={settingsImage} alt="Settings" />
+                    <img class="taskbarChild" src={settingsImage} alt="Settings" onClick={() => this.props.openModal()} />
                     <img class="taskbarChild" src={fullscreenImage} alt="Full screen" />
                 </div>
             </div>
