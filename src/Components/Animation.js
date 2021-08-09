@@ -19,7 +19,7 @@ function animate(maxBars, heights, colors) {
   }
 
   return (
-    <Canvas orthographic camera={{ zoom: 20, position: [0, 0, 100]}}>
+    <Canvas orthographic camera={{ zoom: 14, position: [0, 0, 100]}}>
       <ambientLight intensity={0.1} />
       <pointLight position={[0, 0, 100]} />
       {boxes}
