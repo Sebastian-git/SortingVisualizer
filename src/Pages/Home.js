@@ -76,7 +76,7 @@ class Home extends Component {
         i--
       }
     }
-    
+
     this.setState({
       heights : tempHeights
     })
@@ -250,7 +250,6 @@ class Home extends Component {
     let minIndex = 0
     
     while (unsorted.length > 0) {
-      console.log("unsorted:", unsorted, "sorted:", sorted, "data:", data)
       minIndex = 0
       for (let i = 0; i < data.length; i++) {
         await this.playSound(data[i])
