@@ -14,8 +14,8 @@ class Home extends Component {
     currentAlgorithm : "",
     isPlaying : false,
     isSorted : false,
-    maxBars : 20,
-    maxHeight : 30,
+    maxBars : 8,
+    maxHeight : 18,
     transitionDelay : 30,
     colors : [],
     heights : [],
@@ -67,12 +67,20 @@ class Home extends Component {
 
   getRandomHeights = () => {
     let tempHeights = []
-    for (let i = 0; i <= this.state.maxBars*2; i ++) {
-      tempHeights.push(parseInt((Math.random() * this.state.maxHeight) + 1))
+    let randNum = []
+    for (let i = 0; i <= this.state.maxBars*2; i++) {
+      randNum = (parseInt((Math.random() * this.state.maxHeight) + 1))
+      if (!tempHeights.includes(randNum)) {
+        tempHeights.push(randNum)
+      } else {
+        i--
+      }
     }
+    
     this.setState({
       heights : tempHeights
     })
+    
   }
 
   setCurrentAlgorithm = async (name) => {
@@ -156,7 +164,7 @@ class Home extends Component {
     if (volumeLevel === '0') {
       temp.volume.value = -1000
     } else {
-      temp.volume.value = volumeLevel - 20
+      temp.volume.value = volumeLevel - 25
     }
     
     this.setState({
@@ -242,11 +250,12 @@ class Home extends Component {
     let minIndex = 0
     
     while (unsorted.length > 0) {
+      console.log("unsorted:", unsorted, "sorted:", sorted, "data:", data)
       minIndex = 0
       for (let i = 0; i < data.length; i++) {
-        if (!this.state.isPlaying) return
         await this.playSound(data[i])
         await this.updateColors(i, "#FFFFFF")
+        if (!this.state.isPlaying) return
         if (unsorted[i] <= unsorted[minIndex]) {
           minIndex = i
         }
