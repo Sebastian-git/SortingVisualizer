@@ -243,12 +243,15 @@ class Home extends Component {
     
     while (unsorted.length > 0) {
       minIndex = 0
-      for (let i = 0; i < data.length; i++) {
-        if (!this.state.isPlaying) return
-        await this.playSound(data[i])
-        await this.updateColors(i, "#FFFFFF")
-        if (unsorted[i] <= unsorted[minIndex]) {
-          minIndex = i
+      if (unsorted[minIndex + 1] != null && unsorted[minIndex] == unsorted[minIndex + 1]) {
+      } else {
+        for (let i = 0; i < data.length; i++) {
+          if (!this.state.isPlaying) return
+          await this.playSound(data[i])
+          await this.updateColors(i, "#FFFFFF")
+          if (unsorted[i] <= unsorted[minIndex]) {
+            minIndex = i
+          }
         }
       }
       
