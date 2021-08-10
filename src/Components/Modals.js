@@ -10,8 +10,8 @@ const modalStyles = {
         background: "rgba(255, 255, 255, 0)"
     },
     content: {
-        top: '75%',
-        left: '60%',
+        top: '64vh',
+        left: '68vw',
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
@@ -24,7 +24,7 @@ const modalStyles = {
     }
 }  
 
-function settingsModal(showModal, closeModal, setModal, currentSpeed) { 
+function settingsModal(showModal, closeModal, setModal, currentSpeed, currentTune) { 
     return (
         <Modal
             isOpen={showModal}
@@ -38,8 +38,8 @@ function settingsModal(showModal, closeModal, setModal, currentSpeed) {
                 <button class="modalButton" onClick={() => setModal("speed")}>{currentSpeed}</button>
             </div>
             <div id="modalTune">
-                <label class="modalLabel">Tune</label>
-                <button class="modalButton">FMSynth</button>
+                <label class="modalLabel" onClick={() => setModal("tune")}>Tune</label>
+                <button class="modalButton" onClick={() => setModal("tune")}>{currentTune}</button>
             </div>
             </div>
         </Modal>
@@ -57,19 +57,19 @@ function speedModal(showModal, closeModal, setModal, setSpeed) {
             <div id="speedModalContents">
                 <div id="speedModalTop">
                     <img id="speedModalBack" src={backArrowImage} alt="Back arrow" onClick={() => setModal("general")} />
-                    <label id="speedModalLabel" onClick={() => setModal("general")}>Speed</label>
+                    <label id="nestedModalLabel" onClick={() => setModal("general")}>Speed</label>
                 </div>
                 <div id="speedModalBottom">
-                    <button class="speedModalButton" onClick={() => setSpeed("fast")}>Fast</button>
-                    <button class="speedModalButton" onClick={() => setSpeed("medium")}>Medium</button>
-                    <button class="speedModalButton" onClick={() => setSpeed("slow")}>Slow</button>
+                    <button class="nestedModalButton" onClick={() => setSpeed("fast")}>Fast</button>
+                    <button class="nestedModalButton" onClick={() => setSpeed("medium")}>Medium</button>
+                    <button class="nestedModalButton" onClick={() => setSpeed("slow")}>Slow</button>
                 </div>
             </div>
         </Modal>
     )
 }
 
-function toneModal(showModal, closeModal, setModal) {
+function tuneModal(showModal, closeModal, setModal, setTune) {
     return (
         <Modal
             isOpen={showModal}
@@ -77,11 +77,20 @@ function toneModal(showModal, closeModal, setModal) {
             onRequestClose={closeModal}
         >
 
-            <div id="toneModalContents">
-
+            <div id="tuneModalContents">
+                <div id="speedModalTop">
+                        <img id="speedModalBack" src={backArrowImage} alt="Back arrow" onClick={() => setModal("general")} />
+                        <label id="nestedModalLabel" onClick={() => setModal("general")}>Tune</label>
+                    </div>
+                    <div id="speedModalBottom">
+                        <button class="nestedModalButton" onClick={() => setTune("AMSynth")}>AMSynth</button>
+                        <button class="nestedModalButton" onClick={() => setTune("FMSynth")}>FMSynth</button>
+                        <button class="nestedModalButton" onClick={() => setTune("MonoSynth")}>MonoSynth</button>
+                        <button class="nestedModalButton" onClick={() => setTune("MembraneSynth")}>MembraneSynth</button>
+                    </div>
             </div>
         </Modal>
     )
 }
 
-export { settingsModal, speedModal }
+export { settingsModal, speedModal, tuneModal }

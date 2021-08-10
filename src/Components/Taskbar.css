@@ -35,3 +35,32 @@
     opacity: 0;
     border: none;
 }
+
+
+@media (min-width:320px)  { 
+    /* smartphones, iPhone, portrait 480x320 phones */ 
+    #taskbar {
+        margin: 5% 2%;
+    }
+    .taskbarChild {
+        height: 30px;
+        padding: 0;
+    }
+}
+
+@media (min-width:481px)  { 
+    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. 
+    */ 
+
+}
+
+@media (min-width:641px)  { 
+    /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
+    #taskbar {
+        margin: 0 25%;
+    }
+    .taskbarChild {
+        height: 30px;
+        padding: 0;
+    }
+}
