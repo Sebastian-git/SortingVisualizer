@@ -1,6 +1,6 @@
 body {
   background: #180A32;
-  background-image: url("../imgs/background.svg");
+  background-image: url("../imgs/bg3.svg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -13,7 +13,7 @@ body {
 
 #title {
     color: #F8F0E3;
-    margin: 1%;
+    margin: 1.5%;
     text-align: center;
     font-size: 50px;
     font-family: "Roboto";
@@ -27,4 +27,60 @@ body {
 #animation {
   margin: 2% 25%;
   height: 50vh;
+}
+
+@media (min-width:320px)  { 
+  /* smartphones, iPhone, portrait 480x320 phones */ 
+  #title {
+    margin: 1%;
+    font-size: 30px;
+  }
+  #content {
+    margin: 5% 0;
+  }
+}
+
+@media (min-width:481px)  { 
+  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. 
+  */ 
+
+}
+
+@media (min-width:641px)  { 
+  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
+  #title {
+    margin: 1%;
+    font-size: 40px;
+  }
+  #content {
+    margin: 6% 0 0;
+  }
+}
+
+@media (min-width:961px)  { 
+  /* tablet, landscape iPad, lo-res laptops ands desktops */ 
+  #title {
+    margin: 1%;
+    font-size: 44px;
+  }
+}
+
+@media (min-width:1025px) { 
+  /* big landscape tablets, laptops, and desktops */ 
+  #title {
+    margin: 1%;
+  }
+  #content {
+    margin: 1%;
+  }
+}
+
+@media (min-width:1281px) { 
+  /* hi-res laptops and desktops */ 
+  #title {
+    margin: 1.2%;
+  }
+  #content {
+    margin: 1%;
+  }
 }

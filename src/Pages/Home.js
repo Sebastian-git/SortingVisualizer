@@ -4,7 +4,7 @@ import * as Tone from 'tone'
 import { animate } from "../Components/Animation"
 import Navbar from "../Components/Navigation"
 import Taskbar from "../Components/Taskbar"
-import { settingsModal, speedModal } from "../Components/Modals"
+import { settingsModal, speedModal, tuneModal } from "../Components/Modals"
 
 import "./Home.css"
 
@@ -23,11 +23,13 @@ class Home extends Component {
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
     audioNoteCombinationStart : 0,
-    fmSynth : new Tone.AMSynth().toDestination(),
+    volume : 20,
+    currentTune : "AMSynth",
+    tune : new Tone.AMSynth().toDestination(),
     showModal : false,
     showSpeedModal : false,
     showTuneModal : false,
-    currentSpeed : "Medium"
+    currentSpeed : "Medium",
   }
 
   componentDidMount() {
@@ -35,6 +37,8 @@ class Home extends Component {
     this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.fillColors()
+    this.updateVolume()
+    this.setSpeed("medium")
   }
 
   fillColors = () => {
@@ -88,7 +92,7 @@ class Home extends Component {
       await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
-    this.state.fmSynth.triggerRelease()
+    this.state.tune.triggerRelease()
   }
 
   playClick = async () => {
@@ -115,12 +119,12 @@ class Home extends Component {
       })
     }
 
-    this.state.fmSynth.triggerRelease()
+    this.state.tune.triggerRelease()
     
   }
 
   restartClick = async () => {
-    this.state.fmSynth.triggerRelease()
+    this.state.tune.triggerRelease()
     this.setState({
       isPlaying : false,
       isSorted : false
@@ -149,27 +153,39 @@ class Home extends Component {
   }
 
   updateVolume = async () => {
-    this.state.fmSynth.triggerRelease()
+    this.state.tune.triggerRelease()
     let temp = new Tone.AMSynth().toDestination()
-    let volumeLevel = document.getElementById("volume").value
+    let localVolume = document.getElementById("volume").value
 
-    if (volumeLevel === '0') {
+    if (this.state.currentTune === "AMSynth") {
+      temp = new Tone.AMSynth().toDestination()
+    } else if (this.state.currentTune === "FMSynth") {
+      temp = new Tone.FMSynth().toDestination()
+    } else if (this.state.currentTune === "FMSynth") {
+      temp = new Tone.MonoSynth().toDestination()
+    } else if (this.state.currentTune === "MembraneSynth") {
+      temp = new Tone.MembraneSynth().toDestination()
+    }
+
+    if (this.state.volume === '0') {
       temp.volume.value = -1000
     } else {
-      temp.volume.value = volumeLevel - 20
+      temp.volume.value = localVolume - 20
     }
     
     this.setState({
-      fmSynth : temp,
+      tune : temp,
+      volume : localVolume - 20
     })
+
   }
 
   playSound = async (distance) => {
     await new Promise(r => setTimeout(r, 10));
-    this.state.fmSynth.triggerRelease()
+    this.state.tune.triggerRelease()
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
     
-    this.state.fmSynth.triggerAttackRelease(note, 10);
+    this.state.tune.triggerAttackRelease(note, 10);
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -323,6 +339,39 @@ class Home extends Component {
     }
   }
 
+  setTune = (tuneName) => {
+    this.setState({
+      showModal : false,
+      showSpeedModal : false,
+      showTuneModal : false
+    })
+
+    this.state.tune.triggerRelease()
+
+    let tempTune = new Tone.AMSynth().toDestination()
+
+    if (tuneName === "AMSynth") {
+      tempTune = new Tone.AMSynth().toDestination()
+    } else if (tuneName === "FMSynth") {
+      tempTune = new Tone.FMSynth().toDestination()
+    } else if (tuneName === "MonoSynth") {
+      tempTune = new Tone.MonoSynth().toDestination()
+    } else if (tuneName === "MembraneSynth") {
+      tempTune = new Tone.MembraneSynth().toDestination()
+    }
+
+    if (this.state.volume === '-20') {
+      tempTune.volume.value = -1000
+    } else {
+      tempTune.volume.value = this.state.volume - 20
+    }
+
+    this.setState({
+      tune : tempTune,
+      currentTune : tuneName
+    })
+  }
+
   render() {
 
     return (
@@ -339,11 +388,15 @@ class Home extends Component {
           </div>
 
           <div id="settingsModal">
-            {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed)}
+            {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed, this.state.currentTune)}
           </div>
           
           <div id="speedModal">
             {speedModal(this.state.showSpeedModal, this.closeModal, this.setModal, this.setSpeed)}
+          </div>
+
+          <div id="tuneModal">
+            {tuneModal(this.state.showTuneModal, this.closeModal, this.setModal, this.setTune)}
           </div>
           
           <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
