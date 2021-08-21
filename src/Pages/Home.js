@@ -32,6 +32,21 @@ class Home extends Component {
     currentSpeed : "Medium",
   }
 
+  constructor(props) {
+    super(props)
+    this.keypressListener = this.keypressListener.bind(this)
+  }
+
+  keypressListener(event) {
+    console.log(event.keyCode)
+    if (event.keyCode === 32) {
+      this.playClick()
+    } 
+    if (event.keyCode === 82) {
+      this.restartClick()
+    }
+  }
+
   componentDidMount() {
     this.getRandomHeights()
     this.setCurrentAlgorithm("quick")
@@ -39,6 +54,11 @@ class Home extends Component {
     this.fillColors()
     this.updateVolume()
     this.setSpeed("medium")
+    document.addEventListener("keydown", this.keypressListener, false);
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.keypressListener, false);
   }
 
   fillColors = () => {

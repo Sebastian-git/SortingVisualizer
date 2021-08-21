@@ -79,5 +79,34 @@
     #navbar {
         margin: 1% 25%;
     }
+}
 
+@media (min-width:1790px) {
+    #navbar {
+        margin: 1% 25%;
+    }
+    .navbarComponent {
+        font-size: 42px;
+        padding: 1% 12% 0;
+    }
+}
+
+@media (min-width:2569px) { 
+    #navbar {
+        margin: 2% 25%;
+    }
+    .navbarComponent {
+        font-size: 46px;
+        padding: 1% 10% 0;
+    }
+}
+
+@media (min-width:2302px) { 
+    #navbar {
+        margin: 1% 25%;
+    }
+    .navbarComponent {
+        font-size: 46px;
+        padding: 1% 12% 0;
+    }
 }

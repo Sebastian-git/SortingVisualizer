@@ -64,3 +64,25 @@
         padding: 0;
     }
 }
+
+@media (min-width:1790px) {
+    #taskbar {
+        padding: 1%;
+        width: 68vw;
+    }
+    .taskbarChild {
+        height: 60px;
+        padding: 0 40px;
+    }
+}
+
+@media (min-width:2302px) { 
+    #taskbar {
+        padding: 1%;
+        width: 68vw;
+    }
+    .taskbarChild {
+        height: 60px;
+        padding: 0 40px;
+    }
+}

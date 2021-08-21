@@ -84,3 +84,46 @@ body {
     margin: 1%;
   }
 }
+
+@media (min-width:1790px) {
+  #title {
+    margin: 1%;
+    font-size: 70px;
+  }
+  #content {
+    align-items: center;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
+  }
+}
+
+@media (min-width:2302px) { 
+  #title {
+    margin: 1%;
+    font-size: 90px;
+  }
+  #content {
+    align-items: center;
+    margin: 1%;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
+  }
+}
+
+@media (min-width:2568px) { 
+  #title {
+    margin: 1%;
+    font-size: 90px;
+  }
+  #content {
+    align-items: center;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
+  }
+}
