@@ -14,11 +14,11 @@ class Navigation extends Component {
       <div id="navbarWrapper2"> 
       <div id="navbarWrapper1">  
         <div id="navbar">
-            <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("quick")}>Quick</button>
-            <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("selection")}>Selection</button>
-            <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("bubble")}>Bubble</button>
-            <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("insertion")}>Insertion</button>
-            <button class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("merge")}>Merge</button>
+            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("quick")}>Quick</label>
+            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("selection")}>Selection</label>
+            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("bubble")}>Bubble</label>
+            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("insertion")}>Insertion</label>
+            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("merge")}>Merge</label>
         </div>
       </div>
       </div>

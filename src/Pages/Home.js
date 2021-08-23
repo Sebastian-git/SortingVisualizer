@@ -175,13 +175,13 @@ class Home extends Component {
   updateVolume = async () => {
     this.state.tune.triggerRelease()
     let temp = new Tone.AMSynth().toDestination()
-    let localVolume = document.getElementById("volume").value
+    let localVolume = document.getElementById("volume").value - 20
 
     if (this.state.currentTune === "AMSynth") {
       temp = new Tone.AMSynth().toDestination()
     } else if (this.state.currentTune === "FMSynth") {
       temp = new Tone.FMSynth().toDestination()
-    } else if (this.state.currentTune === "FMSynth") {
+    } else if (this.state.currentTune === "MonoSynth") {
       temp = new Tone.MonoSynth().toDestination()
     } else if (this.state.currentTune === "MembraneSynth") {
       temp = new Tone.MembraneSynth().toDestination()
@@ -190,12 +190,12 @@ class Home extends Component {
     if (this.state.volume === '0') {
       temp.volume.value = -1000
     } else {
-      temp.volume.value = localVolume - 20
+      temp.volume.value = localVolume
     }
     
     this.setState({
       tune : temp,
-      volume : localVolume - 20
+      volume : localVolume
     })
 
   }
@@ -380,7 +380,7 @@ class Home extends Component {
     if (this.state.volume === '-20') {
       tempTune.volume.value = -1000
     } else {
-      tempTune.volume.value = this.state.volume - 20
+      tempTune.volume.value = this.state.volume
     }
 
     this.setState({
