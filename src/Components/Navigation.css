@@ -20,7 +20,7 @@
 @media (min-width:320px)  { 
     /* smartphones, iPhone, portrait 480x320 phones */ 
     #navbar {
-        margin: 14% 0 10% 0;
+        margin: 6% 0 10% 0;
     }
     .navbarComponent {
         padding: 1% 2% 0;
@@ -38,7 +38,7 @@
 @media (min-width:641px)  { 
     /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
     #navbar {
-        margin: 2.4% 25% 0;
+        margin: 6.5% 25% 0;
     }
     .navbarComponent {
         padding: 1% 9% 0;
@@ -79,5 +79,11 @@
     #navbar {
         margin: 1% 25%;
     }
+}
 
+@media (min-width:1300px) { 
+    /* hi-res laptops and desktops */ 
+    #navbar {
+        margin: 1% 35%;
+    }
 }

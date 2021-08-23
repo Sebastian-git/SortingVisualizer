@@ -44,7 +44,7 @@
     }
     .taskbarChild {
         height: 30px;
-        padding: 0;
+        padding: 2% 4px;
     }
 }
 
@@ -57,10 +57,10 @@
 @media (min-width:641px)  { 
     /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
     #taskbar {
-        margin: 0 25%;
+        margin: 2%;
     }
     .taskbarChild {
         height: 30px;
-        padding: 0;
+        padding: 2% 20px;
     }
 }

@@ -1,6 +1,6 @@
 body {
   background: #180A32;
-  background-image: url("../imgs/bg3.svg");
+  background-image: url("../imgs/backgroundImage.svg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -32,11 +32,15 @@ body {
 @media (min-width:320px)  { 
   /* smartphones, iPhone, portrait 480x320 phones */ 
   #title {
-    margin: 1%;
+    margin: 4%;
     font-size: 30px;
   }
   #content {
     margin: 5% 0;
+  }
+  #animation {
+    margin: 2% 2%;
+    height: 50vh;
   }
 }
 
@@ -49,7 +53,7 @@ body {
 @media (min-width:641px)  { 
   /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
   #title {
-    margin: 1%;
+    margin: 2%;
     font-size: 40px;
   }
   #content {
@@ -79,6 +83,16 @@ body {
   /* hi-res laptops and desktops */ 
   #title {
     margin: 1.2%;
+  }
+  #content {
+    margin: 1%;
+  }
+}
+
+@media (min-width:1300px) { 
+  /* hi-res laptops and desktops */ 
+  #title {
+    margin: 1%;
   }
   #content {
     margin: 1%;

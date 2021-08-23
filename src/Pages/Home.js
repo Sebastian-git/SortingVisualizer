@@ -154,27 +154,27 @@ class Home extends Component {
 
   updateVolume = async () => {
     this.state.tune.triggerRelease()
-    let temp = new Tone.AMSynth().toDestination()
+    let tempTune = new Tone.AMSynth().toDestination()
     let localVolume = document.getElementById("volume").value
 
     if (this.state.currentTune === "AMSynth") {
-      temp = new Tone.AMSynth().toDestination()
+      tempTune = new Tone.AMSynth().toDestination()
     } else if (this.state.currentTune === "FMSynth") {
-      temp = new Tone.FMSynth().toDestination()
-    } else if (this.state.currentTune === "FMSynth") {
-      temp = new Tone.MonoSynth().toDestination()
+      tempTune = new Tone.FMSynth().toDestination()
+    } else if (this.state.currentTune === "MonoSynth") {
+      tempTune = new Tone.MonoSynth().toDestination()
     } else if (this.state.currentTune === "MembraneSynth") {
-      temp = new Tone.MembraneSynth().toDestination()
+      tempTune = new Tone.MembraneSynth().toDestination()
     }
 
     if (this.state.volume === '0') {
-      temp.volume.value = -1000
+      tempTune.volume.value = -1000
     } else {
-      temp.volume.value = localVolume - 20
+      tempTune.volume.value = localVolume - 20
     }
     
     this.setState({
-      tune : temp,
+      tune : tempTune,
       volume : localVolume - 20
     })
 
@@ -349,6 +349,7 @@ class Home extends Component {
     this.state.tune.triggerRelease()
 
     let tempTune = new Tone.AMSynth().toDestination()
+    let localVolume = document.getElementById("volume").value
 
     if (tuneName === "AMSynth") {
       tempTune = new Tone.AMSynth().toDestination()
@@ -363,7 +364,7 @@ class Home extends Component {
     if (this.state.volume === '-20') {
       tempTune.volume.value = -1000
     } else {
-      tempTune.volume.value = this.state.volume - 20
+      tempTune.volume.value = localVolume - 20
     }
 
     this.setState({
