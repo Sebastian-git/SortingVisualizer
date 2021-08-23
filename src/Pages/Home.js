@@ -32,6 +32,21 @@ class Home extends Component {
     currentSpeed : "Medium",
   }
 
+  constructor(props) {
+    super(props)
+    this.keypressListener = this.keypressListener.bind(this)
+  }
+
+  keypressListener(event) {
+    console.log(event.keyCode)
+    if (event.keyCode === 32) {
+      this.playClick()
+    } 
+    if (event.keyCode === 82) {
+      this.restartClick()
+    }
+  }
+
   componentDidMount() {
     this.getRandomHeights()
     this.setCurrentAlgorithm("quick")
@@ -39,6 +54,11 @@ class Home extends Component {
     this.fillColors()
     this.updateVolume()
     this.setSpeed("medium")
+    document.addEventListener("keydown", this.keypressListener, false);
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.keypressListener, false);
   }
 
   fillColors = () => {
@@ -154,15 +174,15 @@ class Home extends Component {
 
   updateVolume = async () => {
     this.state.tune.triggerRelease()
-    let tempTune = new Tone.AMSynth().toDestination()
-    let localVolume = document.getElementById("volume").value
+    let temp = new Tone.AMSynth().toDestination()
+    let localVolume = document.getElementById("volume").value - 20
 
     if (this.state.currentTune === "AMSynth") {
-      tempTune = new Tone.AMSynth().toDestination()
+      temp = new Tone.AMSynth().toDestination()
     } else if (this.state.currentTune === "FMSynth") {
-      tempTune = new Tone.FMSynth().toDestination()
+      temp = new Tone.FMSynth().toDestination()
     } else if (this.state.currentTune === "MonoSynth") {
-      tempTune = new Tone.MonoSynth().toDestination()
+      temp = new Tone.MonoSynth().toDestination()
     } else if (this.state.currentTune === "MembraneSynth") {
       tempTune = new Tone.MembraneSynth().toDestination()
     }
@@ -170,12 +190,12 @@ class Home extends Component {
     if (this.state.volume === '0') {
       tempTune.volume.value = -1000
     } else {
-      tempTune.volume.value = localVolume - 20
+      temp.volume.value = localVolume
     }
     
     this.setState({
-      tune : tempTune,
-      volume : localVolume - 20
+      tune : temp,
+      volume : localVolume
     })
 
   }
@@ -364,7 +384,7 @@ class Home extends Component {
     if (this.state.volume === '-20') {
       tempTune.volume.value = -1000
     } else {
-      tempTune.volume.value = localVolume - 20
+      tempTune.volume.value = this.state.volume
     }
 
     this.setState({

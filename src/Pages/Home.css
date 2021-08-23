@@ -1,6 +1,6 @@
 body {
   background: #180A32;
-  background-image: url("../imgs/backgroundImage.svg");
+  background-image: url("../imgs/background.svg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -89,12 +89,45 @@ body {
   }
 }
 
-@media (min-width:1300px) { 
-  /* hi-res laptops and desktops */ 
+@media (min-width:1790px) {
   #title {
     margin: 1%;
+    font-size: 70px;
   }
   #content {
+    align-items: center;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
+  }
+}
+
+@media (min-width:2302px) { 
+  #title {
     margin: 1%;
+    font-size: 90px;
+  }
+  #content {
+    align-items: center;
+    margin: 1%;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
+  }
+}
+
+@media (min-width:2568px) { 
+  #title {
+    margin: 1%;
+    font-size: 90px;
+  }
+  #content {
+    align-items: center;
+  }
+  #animation {
+    height: 50vh;
+    width: 70vw;
   }
 }

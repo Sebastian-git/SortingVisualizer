@@ -2,88 +2,42 @@
     display: flex;
     justify-content: space-around;
     color: #F8F0E3;
-    margin: 2% 25%;
-    padding: 0.5% 2%;
+    margin: 1% 20%;
+    width: 100%;
 }
 
 .navbarComponent {
     margin: 0;
     background-color: transparent;
     color: white;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     border: transparent;
     cursor: pointer;
     font-family: "Roboto";
 }
 
-@media (min-width:320px)  { 
-    /* smartphones, iPhone, portrait 480x320 phones */ 
-    #navbar {
-        margin: 6% 0 10% 0;
-    }
-    .navbarComponent {
-        padding: 1% 2% 0;
-        font-size: 16px;
-    }
-
+#navbarWrapper1 {
+    margin: 2px 0;
+    display: flex;
+    border-top: solid 4px #C63B57;
+    border-bottom: solid 4px #C63B57;
 }
 
-@media (min-width:481px)  { 
-    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. 
-    */ 
-
+#navbarWrapper2 {
+    margin: 2px 0;
+    border-top: solid 3px #C63B57;
+    border-bottom: solid 3px #C63B57;
 }
 
-@media (min-width:641px)  { 
-    /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
-    #navbar {
-        margin: 6.5% 25% 0;
-    }
-    .navbarComponent {
-        padding: 1% 9% 0;
-        font-size: 18px;
-    }
+#navbarWrapper3 {
+    margin: 2px 0;
+    border-top: solid 2px #C63B57;
+    border-bottom: solid 2px #C63B57;
 }
 
-@media (min-width:961px)  { 
-    /* tablet, landscape iPad, lo-res laptops ands desktops */ 
-    #navbar {
-        display: flex;
-        justify-content: space-around;
-        margin: 2% 25%;
-        text-align: center;
-    }
-    .navbarComponent {
-        font-size: 20px;
-        padding: 1% 5% 0;
-    }
-}
-
-@media (min-width:1025px) { 
-    /* big landscape tablets, laptops, and desktops */ 
-    #navbar {
-        display: flex;
-        justify-content: space-around;
-        margin: 1% 25%;
-        text-align: center;
-    }
-    .navbarComponent {
-        font-size: 22px;
-        padding: 1% 5% 0;
-    }
-}
-
-@media (min-width:1281px) { 
-    /* hi-res laptops and desktops */ 
-    #navbar {
-        margin: 1% 25%;
-    }
-}
-
-@media (min-width:1300px) { 
-    /* hi-res laptops and desktops */ 
-    #navbar {
-        margin: 1% 35%;
-    }
+#navbarWrapper4 {
+    margin: 2vh 0;
+    border-top: solid 1px #C63B57;
+    border-bottom: solid 1px #C63B57;
 }
