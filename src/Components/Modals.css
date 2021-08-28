@@ -39,8 +39,6 @@
   cursor: pointer;
 }
 
-
-
 #speedModalContents {
   background-color: #161616;
   display: flex;
@@ -87,28 +85,4 @@
   width: 20px;
   cursor: pointer;
   padding: 0 10px 0 0;
-}
-
-@media (min-width:320px)  { 
-  /* smartphones, iPhone, portrait 480x320 phones */ 
-
-
-}
-
-@media (min-width:481px)  { 
-  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. 
-  */ 
-
-}
-
-@media (min-width:641px)  { 
-  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
-  #modalContents {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-family: "Roboto";
-    top: 60vh;
-    left: 50vw;
-  }
 }

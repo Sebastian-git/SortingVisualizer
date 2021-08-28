@@ -4,6 +4,8 @@ import * as Tone from 'tone'
 import { animate } from "../Components/Animation"
 import Navbar from "../Components/Navigation"
 import Taskbar from "../Components/Taskbar"
+import InfoLeft from "../Components/InfoLeft"
+import InfoRight from "../Components/InfoRight"
 import { settingsModal, speedModal, tuneModal } from "../Components/Modals"
 
 import "./Home.css"
@@ -174,8 +176,9 @@ class Home extends Component {
 
   updateVolume = async () => {
     this.state.tune.triggerRelease()
+    let tempTune = ""
     let temp = new Tone.AMSynth().toDestination()
-    let localVolume = document.getElementById("volume").value - 20
+    let localVolume = document.getElementById("volume").value - 30
 
     if (this.state.currentTune === "AMSynth") {
       temp = new Tone.AMSynth().toDestination()
@@ -187,8 +190,10 @@ class Home extends Component {
       tempTune = new Tone.MembraneSynth().toDestination()
     }
 
-    if (this.state.volume === '0') {
-      tempTune.volume.value = -1000
+    console.log(localVolume)
+
+    if (localVolume === -30) {
+      temp.volume.value = -500
     } else {
       temp.volume.value = localVolume
     }
@@ -399,29 +404,41 @@ class Home extends Component {
       <React.Fragment>
 
         <div id="header">
-          <h1 id="title">Sorting Visualizer</h1>
+          <div id="titleContainer">
+            <p class="title" id="titleA">Sorting</p>
+            <p class="title" id="titleB">Visualizer</p>  
+          </div>
           <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} />
         </div>
    
         <div id="content">
-          <div id="animation">
-            {animate(this.state.maxBars, this.state.heights, this.state.colors)}
+          
+          <InfoLeft/>
+          
+          <div id="animationWrapper">
+            <div id="animation">
+              {animate(this.state.maxBars, this.state.heights, this.state.colors)}
+            </div>
+
+            <div id="settingsModal">
+              {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed, this.state.currentTune)}
+            </div>
+            
+            <div id="speedModal">
+              {speedModal(this.state.showSpeedModal, this.closeModal, this.setModal, this.setSpeed)}
+            </div>
+
+            <div id="tuneModal">
+              {tuneModal(this.state.showTuneModal, this.closeModal, this.setModal, this.setTune)}
+            </div>
+            
+            <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
           </div>
 
-          <div id="settingsModal">
-            {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed, this.state.currentTune)}
-          </div>
-          
-          <div id="speedModal">
-            {speedModal(this.state.showSpeedModal, this.closeModal, this.setModal, this.setSpeed)}
-          </div>
+          <InfoRight/>
 
-          <div id="tuneModal">
-            {tuneModal(this.state.showTuneModal, this.closeModal, this.setModal, this.setTune)}
           </div>
-          
-          <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
-        </div>
+        
       </React.Fragment>
     );
   }

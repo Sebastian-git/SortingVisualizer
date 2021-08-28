@@ -3,26 +3,36 @@ import "./Navigation.css"
 
 class Navigation extends Component {
 
+  state = {
+    selected : ""
+  }
+
+  setCurrentAlgorithm = async (alg) => {
+    this.props.setCurrentAlgorithm(alg)
+    await this.setState({
+      selected : alg.toLowerCase()
+    })
+  }
+
   render() {
+    let names = ["Quick", "Selection", "Bubble", "Insertion", "Merge"]
+    let buttons = []
+
+    for (let i = 0; i < names.length; i++) {
+      buttons.push(
+        <div className="navbarComponentWrapper">
+          <label className="navbarComponent" onClick={() => this.setCurrentAlgorithm(names[i].toLowerCase())}>{names[i]}</label>
+          <div className={this.state.selected === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
+        </div>
+      )
+    }
 
     return (
 
     <React.Fragment>
 
-      <div id="navbarWrapper4">
-      <div id="navbarWrapper3">
-      <div id="navbarWrapper2"> 
-      <div id="navbarWrapper1">  
-        <div id="navbar">
-            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("quick")}>Quick</label>
-            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("selection")}>Selection</label>
-            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("bubble")}>Bubble</label>
-            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("insertion")}>Insertion</label>
-            <label class="navbarComponent" onClick={() => this.props.setCurrentAlgorithm("merge")}>Merge</label>
-        </div>
-      </div>
-      </div>
-      </div>
+      <div id="navbar">
+        {buttons}
       </div>
 
     </React.Fragment>

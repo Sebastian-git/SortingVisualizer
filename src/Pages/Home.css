@@ -1,6 +1,5 @@
 body {
-  background: #180A32;
-  background-image: url("../imgs/background.svg");
+  background: #0f0914;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -8,126 +7,60 @@ body {
 #header {
     display: flex;
     flex-direction: column;
-    margin: 0;
+    margin: 2%;
 }
 
-#title {
-    color: #F8F0E3;
-    margin: 1.5%;
-    text-align: center;
-    font-size: 50px;
-    font-family: "Roboto";
+@font-face {
+  font-family: AlienEncounterSolid;
+  src: url(../fonts/Alien-Encounters-Solid-Bold-Italic.ttf);
+}
+
+@font-face {
+  font-family: AlienEncounterStrike;
+  src: url(../fonts/Alien-Encounters-Bold-Italic.ttf);
+}
+
+@font-face {
+  font-family: AlienEncounterBold;
+  src: url(../fonts/Alien-Encounters-Solid-Bold.ttf);
+}
+
+#titleContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  font-size: 50px;
+  font-family: AlienEncounterSolid;
+  text-shadow: 0 0 7px;
+  padding: 0;
+  margin: 0 10px 4vh;
+}
+
+#titleA {
+    color: #FFFBF9;
+    text-shadow: #FFFBF9;
+}
+
+#titleB {
+    color: #2DE3FF;
+    text-shadow: #2DE3FF;
 }
 
 #content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+#animationWrapper {
   display: flex;
   flex-direction: column;
 }
 
 #animation {
-  margin: 2% 25%;
-  height: 50vh;
-}
-
-@media (min-width:320px)  { 
-  /* smartphones, iPhone, portrait 480x320 phones */ 
-  #title {
-    margin: 4%;
-    font-size: 30px;
-  }
-  #content {
-    margin: 5% 0;
-  }
-  #animation {
-    margin: 2% 2%;
-    height: 50vh;
-  }
-}
-
-@media (min-width:481px)  { 
-  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. 
-  */ 
-
-}
-
-@media (min-width:641px)  { 
-  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
-  #title {
-    margin: 2%;
-    font-size: 40px;
-  }
-  #content {
-    margin: 6% 0 0;
-  }
-}
-
-@media (min-width:961px)  { 
-  /* tablet, landscape iPad, lo-res laptops ands desktops */ 
-  #title {
-    margin: 1%;
-    font-size: 44px;
-  }
-}
-
-@media (min-width:1025px) { 
-  /* big landscape tablets, laptops, and desktops */ 
-  #title {
-    margin: 1%;
-  }
-  #content {
-    margin: 1%;
-  }
-}
-
-@media (min-width:1281px) { 
-  /* hi-res laptops and desktops */ 
-  #title {
-    margin: 1.2%;
-  }
-  #content {
-    margin: 1%;
-  }
-}
-
-@media (min-width:1790px) {
-  #title {
-    margin: 1%;
-    font-size: 70px;
-  }
-  #content {
-    align-items: center;
-  }
-  #animation {
-    height: 50vh;
-    width: 70vw;
-  }
-}
-
-@media (min-width:2302px) { 
-  #title {
-    margin: 1%;
-    font-size: 90px;
-  }
-  #content {
-    align-items: center;
-    margin: 1%;
-  }
-  #animation {
-    height: 50vh;
-    width: 70vw;
-  }
-}
-
-@media (min-width:2568px) { 
-  #title {
-    margin: 1%;
-    font-size: 90px;
-  }
-  #content {
-    align-items: center;
-  }
-  #animation {
-    height: 50vh;
-    width: 70vw;
-  }
+  margin: 0;
+  height: 56vh;
+  width: 54vw;
 }

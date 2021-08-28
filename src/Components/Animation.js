@@ -23,7 +23,7 @@ function animate(maxBars, heights, colors) {
       <ambientLight intensity={0.1} />
       <pointLight position={[0, 0, 100]} />
       {boxes}
-      <color attach="background" args={["#281247"]} />
+      <color attach="background" args={["#21172B"]} />
     </Canvas>
   )
 }

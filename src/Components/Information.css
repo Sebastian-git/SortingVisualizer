@@ -1,0 +1,37 @@
+.info {
+    margin: 0 2%;
+    width: 22em;
+    text-align: left;
+    font-family: "Lucida Console";
+}
+
+.infoCategory {
+    margin-bottom: 18%;
+}
+
+.infoTitle {
+    margin: 0;
+    font-family: "Lucida Console";
+    font-weight: 900;
+    font-size: 15px;
+    color: #2DE3FF;
+    text-shadow: 0 0 2px #2DE3FF;
+}
+
+.infoDesc {
+    margin: 16px 0 0 14px;
+    font-size: 13px;
+    color: #FFF0E9;
+}
+
+.infoStatWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.infoComplexityDesc {
+    margin-left: 12px;
+    font-size: 13px;
+    color: #FFF0E9;
+}
