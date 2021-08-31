@@ -4,14 +4,16 @@ import "./Navigation.css"
 class Navigation extends Component {
 
   state = {
-    selected : ""
+    selectedAlgorithm : ""
   }
 
   setCurrentAlgorithm = async (alg) => {
-    this.props.setCurrentAlgorithm(alg)
-    await this.setState({
-      selected : alg.toLowerCase()
-    })
+    if (alg !== this.state.selectedAlgorithm) {
+      await this.setState({
+        selectedAlgorithm : alg.toLowerCase()
+      })
+      this.props.setCurrentAlgorithm(alg)
+    }
   }
 
   render() {
@@ -22,7 +24,7 @@ class Navigation extends Component {
       buttons.push(
         <div className="navbarComponentWrapper">
           <label className="navbarComponent" onClick={() => this.setCurrentAlgorithm(names[i].toLowerCase())}>{names[i]}</label>
-          <div className={this.state.selected === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
+          <div className={this.state.selectedAlgorithm === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
         </div>
       )
     }

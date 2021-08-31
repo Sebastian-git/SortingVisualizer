@@ -6,7 +6,6 @@ import Navbar from "../Components/Navigation"
 import Taskbar from "../Components/Taskbar"
 import InfoLeft from "../Components/InfoLeft"
 import InfoRight from "../Components/InfoRight"
-import { settingsModal, speedModal, tuneModal } from "../Components/Modals"
 
 import "./Home.css"
 
@@ -18,7 +17,7 @@ class Home extends Component {
     isSorted : false,
     maxBars : 20,
     maxHeight : 30,
-    transitionDelay : 30,
+    transitionDelay : 50,
     colors : [],
     heights : [],
     audioControlToggle : false,
@@ -32,15 +31,22 @@ class Home extends Component {
     showSpeedModal : false,
     showTuneModal : false,
     currentSpeed : "Medium",
+    speedCounter : 1,
+    tuneCounter : 0,
+    transitionCounter : 1,
   }
 
   constructor(props) {
     super(props)
     this.keypressListener = this.keypressListener.bind(this)
+    this.comparisons = 0
+    this.startTime = Date.now()
+    this.speedOptions = ["Slow", "Medium", "Fast"]
+    this.tuneOptions = ["AMSynth", "FMSynth", "MonoSynth", "MembraneSynth"]
+    this.transitionOptions = [200, 50, 1]
   }
 
   keypressListener(event) {
-    console.log(event.keyCode)
     if (event.keyCode === 32) {
       this.playClick()
     } 
@@ -51,16 +57,19 @@ class Home extends Component {
 
   componentDidMount() {
     this.getRandomHeights()
-    this.setCurrentAlgorithm("quick")
+    //this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.fillColors()
     this.updateVolume()
-    this.setSpeed("medium")
     document.addEventListener("keydown", this.keypressListener, false);
   }
 
   componentWillUnmount(){
     document.removeEventListener("keydown", this.keypressListener, false);
+  }
+
+  getTime = () => {
+    return Math.abs(this.startTime - Date.now())/1000
   }
 
   fillColors = () => {
@@ -91,6 +100,102 @@ class Home extends Component {
     })
   }
 
+  //["Fast", "Medium", "Slow"]
+
+  incrementSpeed = () => {
+    const prevCount =  this.state.speedCounter 
+    const prevDelay = this.state.transitionCounter
+    let newCount = prevCount
+    let newDelay = prevDelay
+    if (prevDelay + 1 < 3) {
+      newCount = prevCount + 1
+      newDelay = prevDelay + 1
+      this.setState({
+        speedCounter : newCount,
+        currentSpeed : this.speedOptions[newCount],
+        transitionCounter : newDelay,
+        transitionDelay :  this.transitionOptions[newDelay]
+      })
+    }
+  }
+
+  decrementSpeed = () => {
+    const prevCount = this.state.speedCounter 
+    const prevDelay = this.state.transitionCounter
+    let newCount = prevCount
+    let newDelay = prevDelay
+    if (prevCount - 1 >= 0) {
+      newCount = prevCount - 1
+      newDelay = prevDelay - 1
+      this.setState({
+        speedCounter : newCount,
+        currentSpeed : this.speedOptions[newCount],
+        transitionCounter : newDelay,
+        transitionDelay :  this.transitionOptions[newDelay]
+      })
+    }
+  }
+
+  //["AMSynth", "FMSynth", "MonoSynth", "MembraneSynth"]
+
+  incrementTune = () => {
+    this.state.tune.triggerRelease()
+
+    const prevCount =  this.state.tuneCounter
+    let newCount = prevCount;
+    if (prevCount + 1 < 4) {
+      newCount = prevCount + 1
+    }
+    let newTune = this.tuneOptions[Math.abs(newCount)]
+    let tempTune = new Tone.AMSynth().toDestination()
+    tempTune = this.updateTune(newTune.toLowerCase(), tempTune)
+
+    this.setState({
+      tuneCounter : newCount,
+      currentTune : newTune,
+      tune : tempTune
+    })
+  }
+
+  decrementTune = () => {
+    this.state.tune.triggerRelease()
+
+    const prevCount = this.state.tuneCounter
+    let newCount = prevCount;
+    if (prevCount - 1 >= 0) {
+      newCount = prevCount - 1
+    }
+    let tempTune = new Tone.AMSynth().toDestination()
+    let newTune = this.tuneOptions[Math.abs(newCount)]
+    tempTune = this.updateTune(newTune.toLowerCase(), tempTune)
+    
+    this.setState({
+      tuneCounter : newCount,
+      currentTune : newTune,
+      tune : tempTune
+    })
+  }
+
+  updateTune = (newTune, tempTune) => {
+    console.log("Called with", newTune)
+    if (newTune === "AMSynth".toLowerCase()) {
+      tempTune = new Tone.AMSynth().toDestination()
+    } else if (newTune === "FMSynth".toLowerCase()) {
+      tempTune = new Tone.FMSynth().toDestination()
+    } else if (newTune === "MonoSynth".toLowerCase()) {
+      tempTune = new Tone.MonoSynth().toDestination()
+    } else if (newTune === "MembraneSynth".toLowerCase()) {
+      tempTune = new Tone.MembraneSynth().toDestination()
+    }
+
+    if (this.state.volume === '-20') {
+      tempTune.volume.value = -1000
+    } else {
+      tempTune.volume.value = this.state.volume
+    }
+    return tempTune
+  }
+
   getRandomHeights = () => {
     let tempHeights = []
     for (let i = 0; i <= this.state.maxBars*2; i ++) {
@@ -118,6 +223,7 @@ class Home extends Component {
   }
 
   playClick = async () => {
+    this.startTime = Date.now()
     let temp = this.state.isPlaying
     await this.setState({
       isPlaying : !temp
@@ -146,6 +252,8 @@ class Home extends Component {
   }
 
   restartClick = async () => {
+    this.comparisons = 0
+    this.startTime = Date.now()
     this.state.tune.triggerRelease()
     this.setState({
       isPlaying : false,
@@ -248,6 +356,7 @@ class Home extends Component {
   quicksort = async (data, left, right) => {
     if (!this.state.isPlaying) return
     if (left < right) {
+      this.comparisons += 1
       let index = await this.partition(data, left, right)
       await this.quicksort(data, left, index - 1)
       await this.quicksort(data, index + 1, right)
@@ -263,6 +372,7 @@ class Home extends Component {
       await this.updateColors(j, "#FFFFFF")
       await this.playSound(data[j])
       if (data[j] < pivot) {
+        this.comparisons += 1
         i++
         await this.updateColors(i, "#00FF00")
         await this.updateColors(j, "#FF0000")
@@ -285,12 +395,14 @@ class Home extends Component {
     while (unsorted.length > 0) {
       minIndex = 0
       if (unsorted[minIndex + 1] != null && unsorted[minIndex] == unsorted[minIndex + 1]) {
+        this.comparisons += 1
       } else {
         for (let i = 0; i < data.length; i++) {
           if (!this.state.isPlaying) return
           await this.playSound(data[i])
           await this.updateColors(i, "#FFFFFF")
           if (unsorted[i] <= unsorted[minIndex]) {
+            this.comparisons += 1
             minIndex = i
           }
         }
@@ -302,102 +414,7 @@ class Home extends Component {
       await this.updateHeight(data)
     }
   }
-
-  closeModal = () => {
-    this.setState({
-      showModal : false,
-      showSpeedModal : false,
-      showTuneModal : false
-    })
-  }
-
-  openModal = () => {
-    this.setState({
-      showModal : true
-    })
-  }
-
-  setModal = (name) => {
-    if (name === "general") {
-      this.setState({
-        showModal : true,
-        showSpeedModal : false,
-        showTuneModal : false
-      })
-    } else if (name === "speed") {
-      this.setState({
-        showModal : false,
-        showSpeedModal : true,
-        showTuneModal : false
-      })
-    } else if (name === "tune") {
-      this.setState({
-        showModal : false,
-        showSpeedModal : false,
-        showTuneModal : true
-      })
-    }
-  }
-
-  setSpeed = (speed) => {
-    this.setState({
-      showModal : false,
-      showSpeedModal : false,
-      showTuneModal : false
-    })
-    if (speed === "fast") {
-      this.setState({
-        transitionDelay : 1,
-        currentSpeed : "Fast"
-      })
-    }
-    if (speed === "medium") {
-      this.setState({
-        transitionDelay : 50,
-        currentSpeed : "Medium"
-      })
-    } else if (speed === "slow") {
-      this.setState({
-        transitionDelay : 200,
-        currentSpeed : "Slow"
-      })
-    }
-  }
-
-  setTune = (tuneName) => {
-    this.setState({
-      showModal : false,
-      showSpeedModal : false,
-      showTuneModal : false
-    })
-
-    this.state.tune.triggerRelease()
-
-    let tempTune = new Tone.AMSynth().toDestination()
-    let localVolume = document.getElementById("volume").value
-
-    if (tuneName === "AMSynth") {
-      tempTune = new Tone.AMSynth().toDestination()
-    } else if (tuneName === "FMSynth") {
-      tempTune = new Tone.FMSynth().toDestination()
-    } else if (tuneName === "MonoSynth") {
-      tempTune = new Tone.MonoSynth().toDestination()
-    } else if (tuneName === "MembraneSynth") {
-      tempTune = new Tone.MembraneSynth().toDestination()
-    }
-
-    if (this.state.volume === '-20') {
-      tempTune.volume.value = -1000
-    } else {
-      tempTune.volume.value = this.state.volume
-    }
-
-    this.setState({
-      tune : tempTune,
-      currentTune : tuneName
-    })
-  }
-
+  
   render() {
 
     return (
@@ -413,29 +430,17 @@ class Home extends Component {
    
         <div id="content">
           
-          <InfoLeft/>
+          <InfoLeft alg={this.state.currentAlgorithm}/>
           
           <div id="animationWrapper">
             <div id="animation">
               {animate(this.state.maxBars, this.state.heights, this.state.colors)}
             </div>
-
-            <div id="settingsModal">
-              {settingsModal(this.state.showModal, this.closeModal, this.setModal, this.state.currentSpeed, this.state.currentTune)}
-            </div>
-            
-            <div id="speedModal">
-              {speedModal(this.state.showSpeedModal, this.closeModal, this.setModal, this.setSpeed)}
-            </div>
-
-            <div id="tuneModal">
-              {tuneModal(this.state.showTuneModal, this.closeModal, this.setModal, this.setTune)}
-            </div>
             
             <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
           </div>
 
-          <InfoRight/>
+          <InfoRight alg={this.state.currentAlgorithm} comparisons={this.comparisons} timeElapsed={this.state.isPlaying ? this.getTime() : 0} currentSpeed={this.state.currentSpeed} currentTune={this.state.currentTune} incrementSpeed={this.incrementSpeed} decrementSpeed={this.decrementSpeed} incrementTune={this.incrementTune} decrementTune={this.decrementTune} />
 
           </div>
         

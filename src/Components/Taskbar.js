@@ -4,7 +4,6 @@ import "./Taskbar.css"
 import playImage from '../imgs/playImage.png'
 import restart from '../imgs/restartImage.png'
 import volumeImage from '../imgs/volumeImage.png'
-import settingsImage from "../imgs/settingsImage.png"
 import fullscreenImage from "../imgs/fullscreenImage.png"
 
 class Navigation extends Component {
@@ -23,7 +22,6 @@ class Navigation extends Component {
                     </div>
                 </div>
                 <div id="rightTaskbar">
-                    <img class="taskbarChild" src={settingsImage} alt="Settings" onClick={() => this.props.openModal()} />
                     <img class="taskbarChild" src={fullscreenImage} alt="Full screen" />
                 </div>
             </div>
