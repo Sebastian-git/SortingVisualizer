@@ -15,21 +15,22 @@ class Home extends Component {
     currentAlgorithm : "",
     isPlaying : false,
     isSorted : false,
+    
     maxBars : 20,
     maxHeight : 30,
     transitionDelay : 50,
+    
     colors : [],
     heights : [],
+
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
     audioNoteCombinationStart : 0,
     volume : 20,
+    
     currentTune : "AMSynth",
     tune : new Tone.AMSynth().toDestination(),
-    showModal : false,
-    showSpeedModal : false,
-    showTuneModal : false,
     currentSpeed : "Medium",
     speedCounter : 1,
     tuneCounter : 0,
@@ -39,8 +40,11 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.keypressListener = this.keypressListener.bind(this)
+    
     this.comparisons = 0
     this.startTime = Date.now()
+    this.pastTime = 0
+
     this.speedOptions = ["Slow", "Medium", "Fast"]
     this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
     this.transitionOptions = [200, 50, 1]
@@ -100,8 +104,6 @@ class Home extends Component {
     })
   }
 
-  //["Fast", "Medium", "Slow"]
-
   incrementSpeed = () => {
     const prevCount =  this.state.speedCounter 
     const prevDelay = this.state.transitionCounter
@@ -135,8 +137,6 @@ class Home extends Component {
       })
     }
   }
-
-  //["AMSynth", "FMSynth", "MonoSynth", "MembraneSynth"]
 
   incrementTune = () => {
     this.state.tune.triggerRelease()
@@ -177,7 +177,6 @@ class Home extends Component {
   }
 
   updateTune = (newTune, tempTune) => {
-    console.log("Called with", newTune)
     if (newTune === "AMSynth".toLowerCase()) {
       tempTune = new Tone.AMSynth().toDestination()
     } else if (newTune === "FMSynth".toLowerCase()) {
@@ -214,6 +213,7 @@ class Home extends Component {
   }
 
   playAllBars = async () => {
+    this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
     let delay = 2000
     for (let i = 0; i < this.state.heights.length; i++) {
       await this.playSound(i)
@@ -253,7 +253,7 @@ class Home extends Component {
 
   restartClick = async () => {
     this.comparisons = 0
-    this.startTime = Date.now()
+    this.pastTime = 0
     this.state.tune.triggerRelease()
     this.setState({
       isPlaying : false,
@@ -288,8 +288,6 @@ class Home extends Component {
     let temp = new Tone.AMSynth().toDestination()
     let localVolume = document.getElementById("volume").value - 30
 
-    console.log(this.state.currentTune)
-
     if (this.state.currentTune === "AMSynth") {
       temp = new Tone.AMSynth().toDestination()
     } else if (this.state.currentTune === "FMSynth") {
@@ -299,8 +297,6 @@ class Home extends Component {
     } else if (this.state.currentTune === "M2Synth") {
       tempTune = new Tone.MembraneSynth().toDestination()
     }
-
-    console.log(localVolume)
 
     if (localVolume === -30) {
       temp.volume.value = -500
@@ -312,7 +308,6 @@ class Home extends Component {
       tune : temp,
       volume : localVolume
     })
-
   }
 
   playSound = async (distance) => {
@@ -442,7 +437,7 @@ class Home extends Component {
             <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
           </div>
 
-          <InfoRight alg={this.state.currentAlgorithm} comparisons={this.comparisons} timeElapsed={this.state.isPlaying ? this.getTime() : 0} currentSpeed={this.state.currentSpeed} currentTune={this.state.currentTune} incrementSpeed={this.incrementSpeed} decrementSpeed={this.decrementSpeed} incrementTune={this.incrementTune} decrementTune={this.decrementTune} />
+          <InfoRight alg={this.state.currentAlgorithm} comparisons={this.comparisons} timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} currentSpeed={this.state.currentSpeed} currentTune={this.state.currentTune} incrementSpeed={this.incrementSpeed} decrementSpeed={this.decrementSpeed} incrementTune={this.incrementTune} decrementTune={this.decrementTune} />
 
           </div>
         
