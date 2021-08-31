@@ -42,7 +42,7 @@ class Home extends Component {
     this.comparisons = 0
     this.startTime = Date.now()
     this.speedOptions = ["Slow", "Medium", "Fast"]
-    this.tuneOptions = ["AMSynth", "FMSynth", "MonoSynth", "MembraneSynth"]
+    this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
     this.transitionOptions = [200, 50, 1]
   }
 
@@ -182,9 +182,9 @@ class Home extends Component {
       tempTune = new Tone.AMSynth().toDestination()
     } else if (newTune === "FMSynth".toLowerCase()) {
       tempTune = new Tone.FMSynth().toDestination()
-    } else if (newTune === "MonoSynth".toLowerCase()) {
+    } else if (newTune === "M1Synth".toLowerCase()) {
       tempTune = new Tone.MonoSynth().toDestination()
-    } else if (newTune === "MembraneSynth".toLowerCase()) {
+    } else if (newTune === "M2Synth".toLowerCase()) {
       tempTune = new Tone.MembraneSynth().toDestination()
     }
 
@@ -288,13 +288,15 @@ class Home extends Component {
     let temp = new Tone.AMSynth().toDestination()
     let localVolume = document.getElementById("volume").value - 30
 
+    console.log(this.state.currentTune)
+
     if (this.state.currentTune === "AMSynth") {
       temp = new Tone.AMSynth().toDestination()
     } else if (this.state.currentTune === "FMSynth") {
       temp = new Tone.FMSynth().toDestination()
-    } else if (this.state.currentTune === "MonoSynth") {
+    } else if (this.state.currentTune === "M1Synth") {
       temp = new Tone.MonoSynth().toDestination()
-    } else if (this.state.currentTune === "MembraneSynth") {
+    } else if (this.state.currentTune === "M2Synth") {
       tempTune = new Tone.MembraneSynth().toDestination()
     }
 
@@ -414,7 +416,7 @@ class Home extends Component {
       await this.updateHeight(data)
     }
   }
-  
+
   render() {
 
     return (
