@@ -284,7 +284,6 @@ class Home extends Component {
 
   updateVolume = async () => {
     this.state.tune.triggerRelease()
-    let tempTune = ""
     let temp = new Tone.AMSynth().toDestination()
     let localVolume = document.getElementById("volume").value - 30
 
@@ -295,7 +294,7 @@ class Home extends Component {
     } else if (this.state.currentTune === "M1Synth") {
       temp = new Tone.MonoSynth().toDestination()
     } else if (this.state.currentTune === "M2Synth") {
-      tempTune = new Tone.MembraneSynth().toDestination()
+      temp = new Tone.MembraneSynth().toDestination()
     }
 
     if (localVolume === -30) {
@@ -391,7 +390,7 @@ class Home extends Component {
     
     while (unsorted.length > 0) {
       minIndex = 0
-      if (unsorted[minIndex + 1] != null && unsorted[minIndex] == unsorted[minIndex + 1]) {
+      if (unsorted[minIndex + 1] !== null && unsorted[minIndex] === unsorted[minIndex + 1]) {
         this.comparisons += 1
       } else {
         for (let i = 0; i < data.length; i++) {

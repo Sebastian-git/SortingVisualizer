@@ -7,11 +7,17 @@ class InfoLeft extends Component {
     super()
     this.descriptions = {
       "quick" : "This Divide and Conquer algorithm picks an arbitrary element as a pivot, then compares elements around the pivot putting smaller elements on the left and larger on the right. The process is repeated recursively until finished",
-      "selection" : "",
+      "selection" : "Slow and inept, the algorithm repeatedly loops through a list to find the smallest element then shifts it to the front.",
+      "bubble" : "",
+      "insertion" : "",
+      "merge" : ""
     }
     this.histories = {
       "quick" : "Created by British computer scientist Tony Hoare in 1959 while visiting Moscow State University. Initially, he thought the algorithm was too simple to publish but finally got around to it in 1961.",
-      "selection" : ""
+      "selection" : "Supposedly created by Oscar Wilde, though there is little documentation behind its origins. The algorithm is so simple that it has almost surely been used since before 480 B.C.",
+      "bubble" : "",
+      "insertion" : "",
+      "merge" : ""
     }
   }
 

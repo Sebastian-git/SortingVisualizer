@@ -8,21 +8,39 @@ class InfoRight extends Component {
 
   constructor() {
     super()
+
+    /*
+    Helpful info: https://www.bigocheatsheet.com/
+    Potential extra algorithms: Bucket Sort, Heap Sort, Radix Sort
+    */
+
     this.bestTime = {
-      "quick" : "O(nlogn)",
-      "selection" : "",
+      "quick" : "O(nlog(n))",
+      "selection" : "O(n^2)",
+      "bubble" : "O(n)",
+      "insertion" : "O(n)",
+      "merge" : "O(nlog(n))"
     }
     this.avgTime = {
-      "quick" : "O(nlogn)",
-      "selection" : ""
+      "quick" : "O(nlog(n))",
+      "selection" : "O(n^2)",
+      "bubble" : "O(n^2)",
+      "insertion" : "O(n^2)",
+      "merge" : "O(nlog(n))"
     }
     this.worseTime = {
       "quick" : "O(n^2)",
-      "selection" : "" 
+      "selection" : "O(n^2)",
+      "bubble" : "O(n^2)",
+      "insertion" : "O(n^2)",
+      "merge" : "O(nlog(n))"
     }
     this.space = {
-      "quick" : "O(n)",
-      "selection" : "" 
+      "quick" : "O(log(n))",
+      "selection" : "O(1)",
+      "bubble" : "O(1)",
+      "insertion" : "O(1)",
+      "merge" : "O(n)"
     }
     this.start = Date.now()
     this.timeElapsed = this.start - Date.now()
