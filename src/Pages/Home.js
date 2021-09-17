@@ -16,12 +16,9 @@ class Home extends Component {
     isPlaying : false,
     isSorted : false,
     
-    maxBars : 20,
-    maxHeight : 30,
     transitionDelay : 50,
     
     colors : [],
-    heights : [],
 
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
@@ -44,10 +41,15 @@ class Home extends Component {
     this.comparisons = 0
     this.startTime = Date.now()
     this.pastTime = 0
+    
+    this.maxBars = 20
+    this.maxHeight = 30
+
+    this.heights = Array.from({length : this.maxBars*2}, (_, i) => i + 1)
 
     this.speedOptions = ["Slow", "Medium", "Fast"]
     this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
-    this.transitionOptions = [200, 50, 1]
+    this.speedValues = [200, 50, 1]
   }
 
   keypressListener(event) {
@@ -60,7 +62,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.getRandomHeights()
+    this.shuffleHeights()
     //this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.fillColors()
@@ -78,7 +80,7 @@ class Home extends Component {
 
   fillColors = () => {
     let localColors = []
-    for (let i = 0; i <= this.state.maxBars*2; i++) {
+    for (let i = 0; i <= this.maxBars*2; i++) {
       localColors.push("#CC20A5")
     }
     this.setState({
@@ -100,7 +102,7 @@ class Home extends Component {
     
     this.setState({
       audioNoteCombinations : notes,
-      audioNoteCombinationStart : (total / 2) + this.state.maxBars
+      audioNoteCombinationStart : (total / 2) + this.maxBars
     })
   }
 
@@ -116,7 +118,7 @@ class Home extends Component {
         speedCounter : newCount,
         currentSpeed : this.speedOptions[newCount],
         transitionCounter : newDelay,
-        transitionDelay :  this.transitionOptions[newDelay]
+        transitionDelay :  this.speedValues[newDelay]
       })
     }
   }
@@ -133,7 +135,7 @@ class Home extends Component {
         speedCounter : newCount,
         currentSpeed : this.speedOptions[newCount],
         transitionCounter : newDelay,
-        transitionDelay :  this.transitionOptions[newDelay]
+        transitionDelay :  this.speedValues[newDelay]
       })
     }
   }
@@ -195,10 +197,16 @@ class Home extends Component {
     return tempTune
   }
 
-  getRandomHeights = () => {
-    let tempHeights = []
-    for (let i = 0; i <= this.state.maxBars*2; i ++) {
-      tempHeights.push(parseInt((Math.random() * this.state.maxHeight) + 1))
+  shuffleHeights = () => {
+    let rand = 0
+    let temp = 0
+    let tempHeights = this.heights
+
+    for (let i = 0; i < this.maxBars * 2; i++) {
+      rand = Math.floor((Math.random() * this.maxHeight))
+      temp = tempHeights[rand]
+      tempHeights[rand] = tempHeights[i]
+      tempHeights[i] = temp
     }
     this.setState({
       heights : tempHeights
@@ -215,7 +223,7 @@ class Home extends Component {
   playAllBars = async () => {
     this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
     let delay = 2000
-    for (let i = 0; i < this.state.heights.length; i++) {
+    for (let i = 0; i < this.heights.length; i++) {
       await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
@@ -230,7 +238,7 @@ class Home extends Component {
     })
 
     if (!temp && !this.state.isSorted) {
-      let tempHeights = this.state.heights
+      let tempHeights = this.heights
 
       if (this.state.currentAlgorithm === "quick") {
         await this.quicksort(tempHeights, 0, tempHeights.length - 1)
@@ -259,7 +267,7 @@ class Home extends Component {
       isPlaying : false,
       isSorted : false
     })
-    this.getRandomHeights()
+    this.shuffleHeights()
   }
 
   volumeHover = async () => {
@@ -430,7 +438,7 @@ class Home extends Component {
           
           <div id="animationWrapper">
             <div id="animation">
-              {animate(this.state.maxBars, this.state.heights, this.state.colors)}
+              {animate(this.maxBars, this.heights, this.state.colors)}
             </div>
             
             <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
