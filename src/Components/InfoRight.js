@@ -98,6 +98,14 @@ class InfoRight extends Component {
               <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.incrementTune()} />
             </div>
           </div>
+          <div className="infoCategory">
+            <p className="infoTitle">BARS</p>
+            <div id="speedTuneContent">
+              <img className="infoArrows" src={arrowLeft} alt="Arrow left" onClick={() => this.props.updateBars(-2)} />
+              <p className="liveInfoChild">{this.props.maxBars}</p>
+              <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.updateBars(2)} />
+            </div>
+          </div>
         </div>
       </React.Fragment>
     )

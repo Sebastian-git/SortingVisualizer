@@ -20,6 +20,11 @@ class Home extends Component {
     
     colors : [],
 
+    maxBars : 10,
+    barThickness : 3,
+    heights : [],
+
+    soundEffectDelay : 10,
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
@@ -28,6 +33,7 @@ class Home extends Component {
     
     currentTune : "AMSynth",
     tune : new Tone.AMSynth().toDestination(),
+    
     currentSpeed : "Medium",
     speedCounter : 1,
     tuneCounter : 0,
@@ -42,14 +48,11 @@ class Home extends Component {
     this.startTime = Date.now()
     this.pastTime = 0
     
-    this.maxBars = 20
     this.maxHeight = 30
-
-    this.heights = Array.from({length : this.maxBars*2}, (_, i) => i + 1)
 
     this.speedOptions = ["Slow", "Medium", "Fast"]
     this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
-    this.speedValues = [200, 50, 1]
+    this.speedValues = [200, 100, 1]
   }
 
   keypressListener(event) {
@@ -62,10 +65,9 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.shuffleHeights()
-    //this.setCurrentAlgorithm("quick")
+    this.fillHeights()
+    this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
-    this.fillColors()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
   }
@@ -74,13 +76,30 @@ class Home extends Component {
     document.removeEventListener("keydown", this.keypressListener, false);
   }
 
+  fillHeights = () => {
+    let rand = 0
+    let temp = 0
+    let tempHeights = Array.from({length : this.state.maxBars}, (_, i) => Math.floor(i*(this.maxHeight+4)/this.state.maxBars) + 1)
+
+    for (let i = 0; i < this.state.maxBars; i++) {
+      rand = Math.floor((Math.random() * this.state.maxBars))
+      temp = tempHeights[rand]
+      tempHeights[rand] = tempHeights[i]
+      tempHeights[i] = temp
+    }
+    this.setState({
+      heights : tempHeights
+    })
+    this.fillColors()
+  }
+
   getTime = () => {
     return Math.abs(this.startTime - Date.now())/1000
   }
 
   fillColors = () => {
     let localColors = []
-    for (let i = 0; i <= this.maxBars*2; i++) {
+    for (let i = 0; i <= this.state.maxBars; i++) {
       localColors.push("#CC20A5")
     }
     this.setState({
@@ -102,7 +121,7 @@ class Home extends Component {
     
     this.setState({
       audioNoteCombinations : notes,
-      audioNoteCombinationStart : (total / 2) + this.maxBars
+      audioNoteCombinationStart : (total / 2) + (this.state.maxBars)
     })
   }
 
@@ -197,20 +216,17 @@ class Home extends Component {
     return tempTune
   }
 
-  shuffleHeights = () => {
-    let rand = 0
-    let temp = 0
-    let tempHeights = this.heights
+  updateBars = async (bars) => {
+    const prevMaxBars = this.state.maxBars;
 
-    for (let i = 0; i < this.maxBars * 2; i++) {
-      rand = Math.floor((Math.random() * this.maxHeight))
-      temp = tempHeights[rand]
-      tempHeights[rand] = tempHeights[i]
-      tempHeights[i] = temp
+    if (prevMaxBars + bars > 20 || prevMaxBars + bars < 2) {
+      return
     }
-    this.setState({
-      heights : tempHeights
+
+    await this.setState({
+      maxBars : prevMaxBars + bars
     })
+    this.restartClick()
   }
 
   setCurrentAlgorithm = async (name) => {
@@ -223,7 +239,7 @@ class Home extends Component {
   playAllBars = async () => {
     this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
     let delay = 2000
-    for (let i = 0; i < this.heights.length; i++) {
+    for (let i = 0; i < this.state.heights.length; i++) {
       await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
@@ -238,7 +254,7 @@ class Home extends Component {
     })
 
     if (!temp && !this.state.isSorted) {
-      let tempHeights = this.heights
+      let tempHeights = this.state.heights
 
       if (this.state.currentAlgorithm === "quick") {
         await this.quicksort(tempHeights, 0, tempHeights.length - 1)
@@ -267,7 +283,7 @@ class Home extends Component {
       isPlaying : false,
       isSorted : false
     })
-    this.shuffleHeights()
+    this.fillHeights()
   }
 
   volumeHover = async () => {
@@ -318,11 +334,11 @@ class Home extends Component {
   }
 
   playSound = async (distance) => {
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, this.state.soundEffectDelay));
     this.state.tune.triggerRelease()
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
     
-    this.state.tune.triggerAttackRelease(note, 10);
+    this.state.tune.triggerAttackRelease(note, this.state.soundEffectDelay);
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -378,8 +394,6 @@ class Home extends Component {
       if (data[j] < pivot) {
         this.comparisons += 1
         i++
-        await this.updateColors(i, "#00FF00")
-        await this.updateColors(j, "#FF0000")
         this.swap(data, j, i)
         await this.updateHeight(data)
         
@@ -438,13 +452,29 @@ class Home extends Component {
           
           <div id="animationWrapper">
             <div id="animation">
-              {animate(this.maxBars, this.heights, this.state.colors)}
+              {animate(this.state.maxBars, this.state.heights, this.state.colors, this.state.barThickness)}
             </div>
             
-            <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
+            <Taskbar 
+            restartClick={this.restartClick} 
+            playClick={this.playClick} 
+            volumeHover={this.volumeHover} 
+            volumeNotHover={this.volumeNotHover} 
+            updateVolume={this.updateVolume} 
+            openModal={this.openModal} />
           </div>
 
-          <InfoRight alg={this.state.currentAlgorithm} comparisons={this.comparisons} timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} currentSpeed={this.state.currentSpeed} currentTune={this.state.currentTune} incrementSpeed={this.incrementSpeed} decrementSpeed={this.decrementSpeed} incrementTune={this.incrementTune} decrementTune={this.decrementTune} />
+          <InfoRight 
+          alg={this.state.currentAlgorithm} 
+          comparisons={this.comparisons} 
+          timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} currentSpeed={this.state.currentSpeed} 
+          currentTune={this.state.currentTune} 
+          incrementSpeed={this.incrementSpeed} 
+          decrementSpeed={this.decrementSpeed} 
+          incrementTune={this.incrementTune} 
+          decrementTune={this.decrementTune}
+          updateBars={this.updateBars}
+          maxBars={this.state.maxBars} />
 
           </div>
         
