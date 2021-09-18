@@ -240,6 +240,10 @@ class Home extends Component {
     this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
     let delay = 2000
     for (let i = 0; i < this.state.heights.length; i++) {
+      if (!this.state.isPlaying) {    
+        this.state.tune.triggerRelease()
+        return
+      }
       await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
@@ -262,8 +266,11 @@ class Home extends Component {
       else if (this.state.currentAlgorithm === "selection") {
         await this.selectionsort(tempHeights)
       }
-      
-      if (this.state.isPlaying === true) this.playAllBars()
+      else if (this.state.currentAlgorithm === "bubble") {
+        await this.bubblesort(tempHeights)
+      }
+  
+      if (this.state.isPlaying === true) await this.playAllBars()
       
       this.setState({
         isPlaying : false,
@@ -431,6 +438,27 @@ class Home extends Component {
 
       await this.updateHeight(data)
     }
+  }
+
+  bubblesort = async (data) => {
+    let didSwap = true
+
+    while (didSwap) {
+      didSwap = false
+
+      for (let i = 0; i < data.length; i++) {
+        if (!this.state.isPlaying) return
+        await this.playSound(data[i])
+        await this.updateColors(i, "#FFFFFF")
+        if (i+1 < data.length && data[i] > data[i+1]) {
+          console.log("Before:", data)
+          await this.swap(data, i, i+1)
+          console.log("After:", data)
+          didSwap = true
+        }
+      }
+    }
+    await this.updateHeight(data)
   }
 
   render() {
