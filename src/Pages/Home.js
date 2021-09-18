@@ -52,7 +52,7 @@ class Home extends Component {
 
     this.speedOptions = ["Slow", "Medium", "Fast"]
     this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
-    this.speedValues = [200, 100, 1]
+    this.speedValues = [300, 100, 1]
   }
 
   keypressListener(event) {
@@ -66,7 +66,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.fillHeights()
-    this.setCurrentAlgorithm("quick")
+    this.setCurrentAlgorithm("insertion")
     this.fillAudioNotes()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
@@ -269,6 +269,12 @@ class Home extends Component {
       else if (this.state.currentAlgorithm === "bubble") {
         await this.bubblesort(tempHeights)
       }
+      else if (this.state.currentAlgorithm === "insertion") {
+        await this.insertionsort(tempHeights)
+      }
+      else if (this.state.currentAlgorithm === "merge") {
+        await this.mergesort(tempHeights)
+      }
   
       if (this.state.isPlaying === true) await this.playAllBars()
       
@@ -356,9 +362,29 @@ class Home extends Component {
       colors : tempColors
     })
     
-    await new Promise(r => setTimeout(r, this.state.transitionDelay));
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 2));
     
     tempColors[index] = "#CC20A5"
+    this.setState({
+      colors : tempColors
+    })
+  }
+
+  swapColors = async (index1, index2) => {
+    let tempColors = this.state.colors
+
+    tempColors[index1] = "#00FF00"
+    tempColors[index2] = "#FF0000"
+    
+    this.setState({
+      colors : tempColors
+    })
+    
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 3));
+    
+    tempColors[index1] = "#CC20A5"
+    tempColors[index2] = "#CC20A5"
+
     this.setState({
       colors : tempColors
     })
@@ -371,7 +397,7 @@ class Home extends Component {
     await new Promise(r => setTimeout(r, this.state.transitionDelay));
   }
 
-  // ALGORITHMS HERE, WILL BE MIGRATED TO INDIVIDUAL COMPONENTS SOON
+  // ALGORITHMS
   
   swap = async (data, indexOne, indexTwo) => {
     if (!this.state.isPlaying) return
@@ -382,6 +408,7 @@ class Home extends Component {
 
   quicksort = async (data, left, right) => {
     if (!this.state.isPlaying) return
+    this.comparisons += 1
     if (left < right) {
       this.comparisons += 1
       let index = await this.partition(data, left, right)
@@ -398,14 +425,17 @@ class Home extends Component {
       if (!this.state.isPlaying) return
       await this.updateColors(j, "#FFFFFF")
       await this.playSound(data[j])
+      this.comparisons += 1
       if (data[j] < pivot) {
         this.comparisons += 1
         i++
+        await this.swapColors(i, j)
         this.swap(data, j, i)
         await this.updateHeight(data)
         
       }
     }
+    await this.swapColors(i+1, right)
     this.swap(data, i+1, right)
     await this.updateHeight(data)
 
@@ -419,20 +449,21 @@ class Home extends Component {
     
     while (unsorted.length > 0) {
       minIndex = 0
+      this.comparisons += 1
       if (unsorted[minIndex + 1] !== null && unsorted[minIndex] === unsorted[minIndex + 1]) {
-        this.comparisons += 1
       } else {
         for (let i = 0; i < data.length; i++) {
           if (!this.state.isPlaying) return
           await this.playSound(data[i])
           await this.updateColors(i, "#FFFFFF")
+          this.comparisons += 1
           if (unsorted[i] <= unsorted[minIndex]) {
-            this.comparisons += 1
             minIndex = i
           }
         }
       }
       
+      await this.swapColors(sorted.length, sorted.length + minIndex)
       sorted.push(unsorted.splice(minIndex, 1))
       data = sorted.concat(unsorted)
 
@@ -448,17 +479,49 @@ class Home extends Component {
 
       for (let i = 0; i < data.length; i++) {
         if (!this.state.isPlaying) return
+
         await this.playSound(data[i])
         await this.updateColors(i, "#FFFFFF")
+
+        this.comparisons += 1
         if (i+1 < data.length && data[i] > data[i+1]) {
-          console.log("Before:", data)
           await this.swap(data, i, i+1)
-          console.log("After:", data)
+          await this.swapColors(i, i+1)
           didSwap = true
         }
       }
     }
     await this.updateHeight(data)
+  }
+
+  insertionsort = async (data) => {
+    let i, j, cur
+
+    for (i = 1; i < data.length; i++) {
+      cur = data[i]
+      j = i - 1
+      
+      await this.playSound(data[i])
+      await this.updateColors(i, "#FFFFFF")
+
+      while (j >= 0 && data[j] > cur) { 
+
+        await this.playSound(data[j])
+        await this.updateColors(j, "#FFFFFF")
+
+        data[j + 1] = data[j]
+        j -= 1
+      }
+      if (data[j + 1] !== cur) {
+        data[j + 1] = cur
+        await this.swapColors(j + 1, i)
+      }
+    }
+    await this.updateHeight(data)
+  }
+
+  mergesort = async (data) => {
+
   }
 
   render() {
