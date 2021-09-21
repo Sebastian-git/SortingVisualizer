@@ -16,7 +16,7 @@ class Navigation extends Component {
                 <div id="leftTaskbar" onMouseOver={() => this.props.volumeHover()} onMouseLeave={() => this.props.volumeNotHover()} >
                     <img class="taskbarChild" src={playImage} alt="Play" onClick={() => this.props.playClick()} />
                     <img class="taskbarChild" src={restart} alt="Restart" onClick={() => this.props.restartClick()} />
-                    <img class="taskbarChild" src={volumeImage} alt="Volume" />
+                    <img id="volumeButton" class="taskbarChild" src={volumeImage} alt="Volume" />
                     <div id="volumeContainer">
                         <input type="range" id="volume" min="0" max="20" onClick={() => this.props.updateVolume()}></input>
                     </div>

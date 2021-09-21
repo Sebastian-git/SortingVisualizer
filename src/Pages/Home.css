@@ -38,11 +38,11 @@ body {
 }
 
 .title {
-  font-size: 50px;
+  font-size: 46px;
   font-family: AlienEncounterSolid;
   text-shadow: 0 0 7px;
   padding: 0;
-  margin: 0 10px 4vh;
+  margin: 0 10px 3vh;
 }
 
 #titleA {
@@ -70,4 +70,62 @@ body {
   margin: 0;
   height: 56vh;
   width: 54vw;
+}
+
+#mobileSpeedWrapper {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  #header {
+    margin: 1px;
+  }
+  .info {
+    display: none;
+  }
+  .title {
+    font-size: 28px;
+    text-shadow: 0 0 7px;
+    padding: 0;
+    margin: 0 4px 0;
+  }
+  #titleContainer {
+    display: flex;
+    justify-content: center;
+    margin: 0 27px 0 0;
+  }
+  #navbar {
+    display: flex;
+    justify-content: center;
+    color: #FFFBF9;
+    margin: 16px 24px 10px 0;
+  }
+  .navbarComponent {
+    padding: 0 1px;
+    font-size: 12px;
+  }
+  .navbarComponentWrapper {
+    width: 20%;
+  }
+  #animation {
+    margin-right: 9vw;
+    height: 56vh;
+    width: 82vw;
+  }
+  #taskbar {
+    padding: 1px;
+    margin-right: 9vw;
+  }
+  .taskbarChild {
+    height: 28px;
+  }
+  #volume {
+    display: none;
+  }
+  #volumeButton {
+    display: none;
+  }
+  #mobileSpeedWrapper {
+    /* enable here for mobile */
+  }
 }

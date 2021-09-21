@@ -26,13 +26,15 @@ class InfoLeft extends Component {
     return (
     <React.Fragment>
         <div class="info">
-          <div id="desc" class="infoCategory">
-            <p class="infoTitle">DESCRIPTION</p>
-            <p class="infoDesc">{this.descriptions[this.props.alg]}</p>
-          </div>
-          <div class="infoCategory">
-            <p class="infoTitle">HISTORY</p>
-            <p class="infoDesc">{this.histories[this.props.alg]}</p>
+          <div id="infoLeft">
+            <div id="desc" class="infoCategory">
+              <p class="infoTitle">DESCRIPTION</p>
+              <p class="infoDesc">{this.descriptions[this.props.alg]}</p>
+            </div>
+            <div class="infoCategory">
+              <p class="infoTitle">HISTORY</p>
+              <p class="infoDesc">{this.histories[this.props.alg]}</p>
+            </div>
           </div>
         </div>
     </React.Fragment>
