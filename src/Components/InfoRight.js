@@ -87,7 +87,7 @@ class InfoRight extends Component {
                 </div>
               </div>
             </div>
-            <div id="computerSpeedWrapper">
+            <div id="speedWrapper">
               <div className="infoCategory">
                 <p className="infoTitle">SPEED</p>
                 <div id="speedTuneContent">
@@ -98,11 +98,13 @@ class InfoRight extends Component {
               </div>
             </div>
             <div className="infoCategory">
-              <p className="infoTitle">TUNE</p>
-              <div id="speedTuneContent">
-                <img className="infoArrows" src={arrowLeft} alt="Arrow left" onClick={() => this.props.decrementTune()} />
-                <p className="liveInfoChild">{this.props.currentTune}</p>
-                <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.incrementTune()} />
+              <div id="tuneWrapper">
+                <p className="infoTitle">TUNE</p>
+                <div id="speedTuneContent">
+                  <img className="infoArrows" src={arrowLeft} alt="Arrow left" onClick={() => this.props.decrementTune()} />
+                  <p className="liveInfoChild">{this.props.currentTune}</p>
+                  <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.incrementTune()} />
+                </div>
               </div>
             </div>
             <div className="infoCategory">
@@ -112,16 +114,6 @@ class InfoRight extends Component {
                 <p className="liveInfoChild">{this.props.maxBars}</p>
                 <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.updateBars(2)} />
               </div>
-            </div>
-          </div>
-        </div>
-        <div id="mobileSpeedWrapper">
-          <div className="infoCategory">
-            <p className="infoTitle">SPEED</p>
-            <div id="speedTuneContent">
-              <img className="infoArrows" src={arrowLeft} alt="Arrow left" onClick={() => this.props.decrementSpeed()} />
-              <p className="liveInfoChild">{this.props.currentSpeed}</p>
-              <img className="infoArrows" src={arrowRight} alt="Arrow right" onClick={() => this.props.incrementSpeed()} />
             </div>
           </div>
         </div>
