@@ -346,6 +346,14 @@ class Home extends Component {
     })
   }
 
+  setFullscreen = () => {
+    let animation = document.getElementById("animation")
+    let toggle = this.state.audioControlToggle
+    animation.style.height = "56vh"
+   // elem.style.opacity = 100
+   // height: 56vh; width: 54vw;
+  }
+
   playSound = async (distance) => {
     await new Promise(r => setTimeout(r, this.state.soundEffectDelay));
     this.state.tune.triggerRelease()

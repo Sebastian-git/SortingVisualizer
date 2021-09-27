@@ -27,9 +27,6 @@ class Navigation extends Component {
           <div className={this.state.selectedAlgorithm === names[i].toLowerCase() || this.props.currentAlgorithm === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
         </div>
       )
-      if (this.props.currentAlgorithm === names[i].toLocaleLowerCase()) {
-
-      }
     }
 
     return (

@@ -22,7 +22,7 @@ class Navigation extends Component {
                     </div>
                 </div>
                 <div id="rightTaskbar">
-                    <img class="taskbarChild" src={fullscreenImage} alt="Full screen" />
+                    <img class="taskbarChild" id="fullscreenImg" src={fullscreenImage} alt="Full screen" onClick={() => this.props.setFullscreen()} />
                 </div>
             </div>
             
