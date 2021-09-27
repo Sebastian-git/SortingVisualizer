@@ -81,7 +81,7 @@ class Home extends Component {
     let temp = 0
     let tempHeights = Array.from({length : this.state.maxBars}, (_, i) => Math.floor(i*(this.maxHeight+4)/this.state.maxBars) + 1)
 
-    for (let i = 0; i < this.state.maxBars; i++) {
+    for (let i = 0; i < this.state.maxBars; ++i) {
       rand = Math.floor((Math.random() * this.state.maxBars))
       temp = tempHeights[rand]
       tempHeights[rand] = tempHeights[i]
@@ -99,7 +99,7 @@ class Home extends Component {
 
   fillColors = () => {
     let localColors = []
-    for (let i = 0; i <= this.state.maxBars; i++) {
+    for (let i = 0; i <= this.state.maxBars; ++i) {
       localColors.push("#CC20A5")
     }
     this.setState({
@@ -112,10 +112,10 @@ class Home extends Component {
     let notes = []
     let total = 0
 
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 7; j++) {
+    for (let i = 0; i < 8; ++i) {
+      for (let j = 0; j < 7; ++j) {
         notes.push(this.state.audioNotes[j] + i.toString())
-        total ++
+        ++total
       }
     }
     
@@ -239,7 +239,7 @@ class Home extends Component {
   playAllBars = async () => {
     this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
     let delay = 2000
-    for (let i = 0; i < this.state.heights.length; i++) {
+    for (let i = 0; i < this.state.heights.length; ++i) {
       if (!this.state.isPlaying) {    
         this.state.tune.triggerRelease()
         return
@@ -273,7 +273,9 @@ class Home extends Component {
         await this.insertionsort(tempHeights)
       }
       else if (this.state.currentAlgorithm === "merge") {
-        await this.mergesort(tempHeights)
+        console.log("original:", tempHeights)
+        await this.mergesort(tempHeights, 0, tempHeights.length-1)
+        console.log("sorted:", tempHeights)
       }
   
       if (this.state.isPlaying === true) await this.playAllBars()
@@ -370,6 +372,26 @@ class Home extends Component {
     })
   }
 
+  updateMergeColors = async (index1, index2, index3, newColor, delay) => {
+    if (!delay) delay = 0
+    let tempColors = this.state.colors
+    tempColors[index1] = newColor
+    tempColors[index2] = newColor
+    tempColors[index3] = newColor
+    this.setState({
+      colors : tempColors
+    })
+    
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 2));
+    
+    tempColors[index1] = "#CC20A5"
+    tempColors[index2] = "#CC20A5"
+    tempColors[index3] = "#CC20A5"
+    this.setState({
+      colors : tempColors
+    })
+  } 
+
   swapColors = async (index1, index2) => {
     let tempColors = this.state.colors
 
@@ -428,7 +450,7 @@ class Home extends Component {
       this.comparisons += 1
       if (data[j] < pivot) {
         this.comparisons += 1
-        i++
+        ++i
         await this.swapColors(i, j)
         this.swap(data, j, i)
         await this.updateHeight(data)
@@ -452,7 +474,7 @@ class Home extends Component {
       this.comparisons += 1
       if (unsorted[minIndex + 1] !== null && unsorted[minIndex] === unsorted[minIndex + 1]) {
       } else {
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; ++i) {
           if (!this.state.isPlaying) return
           await this.playSound(data[i])
           await this.updateColors(i, "#FFFFFF")
@@ -477,14 +499,14 @@ class Home extends Component {
     while (didSwap) {
       didSwap = false
 
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; ++i) {
         if (!this.state.isPlaying) return
-
         await this.playSound(data[i])
         await this.updateColors(i, "#FFFFFF")
 
         this.comparisons += 1
         if (i+1 < data.length && data[i] > data[i+1]) {
+          if (!this.state.isPlaying) return
           await this.swap(data, i, i+1)
           await this.swapColors(i, i+1)
           didSwap = true
@@ -497,14 +519,17 @@ class Home extends Component {
   insertionsort = async (data) => {
     let i, j, cur
 
-    for (i = 1; i < data.length; i++) {
+    for (i = 1; i < data.length; ++i) {
+      if (!this.state.isPlaying) return
+      
       cur = data[i]
       j = i - 1
       
       await this.playSound(data[i])
       await this.updateColors(i, "#FFFFFF")
 
-      while (j >= 0 && data[j] > cur) { 
+      while (j >= 0 && data[j] > cur) {
+        if (!this.state.isPlaying) return
 
         await this.playSound(data[j])
         await this.updateColors(j, "#FFFFFF")
@@ -513,6 +538,7 @@ class Home extends Component {
         j -= 1
       }
       if (data[j + 1] !== cur) {
+        if (!this.state.isPlaying) return
         data[j + 1] = cur
         await this.swapColors(j + 1, i)
       }
@@ -520,8 +546,72 @@ class Home extends Component {
     await this.updateHeight(data)
   }
 
-  mergesort = async (data) => {
+  mergesort = async (data, startIndex, endIndex) => {
+    await this.updateHeight(data)
+    if (startIndex >= endIndex) return
 
+    let middleIndex = startIndex + parseInt((endIndex - startIndex) / 2)
+    
+    await this.playSound(data[middleIndex])
+    await this.updateMergeColors(startIndex, middleIndex, endIndex, "#FFFFFF")
+    
+    if (!this.state.isPlaying) return
+    await this.mergesort(data, startIndex, middleIndex)
+    await this.mergesort(data, middleIndex + 1, endIndex)
+    await this.merge(data, startIndex, middleIndex, endIndex)
+  }
+
+  merge = async(data, startIndex, middleIndex, endIndex) => {
+    // Store values in original list from left to mid - left + 1, and from mid + 1 to right in two temp subarrays 
+    let leftSubArraySize = middleIndex - startIndex + 1
+    let rightSubArraySize = endIndex - middleIndex
+
+    let leftSubArray = new Array(leftSubArraySize)
+    let rightSubArray = new Array(rightSubArraySize)
+    
+    for (let i = 0; i < leftSubArraySize; i++) {
+      leftSubArray[i] = data[startIndex + i]
+    }
+    for (let i = 0; i < rightSubArraySize; i++) {
+      rightSubArray[i] = data[middleIndex + 1 + i]
+    }
+    
+    // Store indices of the two temp subarrays and the index of the merged array in variables
+    let leftSubArrayIndex = 0
+    let rightSubArrayIndex = 0
+    let mergedArrayIndex = startIndex
+
+    // Sort original list as temp subarrays merged with original list
+    while (leftSubArrayIndex < leftSubArraySize && rightSubArrayIndex < rightSubArraySize) {
+      if (!this.state.isPlaying) return
+      if (leftSubArray[leftSubArrayIndex] < rightSubArray[rightSubArrayIndex]) {
+        data[mergedArrayIndex] = leftSubArray[leftSubArrayIndex]
+        ++leftSubArrayIndex
+        await this.playSound(data[mergedArrayIndex])
+        await this.swapColors(mergedArrayIndex, data.indexOf(leftSubArray[leftSubArrayIndex]))
+        await this.updateHeight(data)
+      } else {
+        data[mergedArrayIndex] = rightSubArray[rightSubArrayIndex]
+        ++rightSubArrayIndex
+        await this.playSound(data[mergedArrayIndex])
+        await this.swapColors(mergedArrayIndex, data.indexOf(rightSubArray[rightSubArrayIndex]))
+        await this.updateHeight(data)
+      }
+      ++mergedArrayIndex
+    }
+
+    // Copy remaining elements of left & right subarray if they exist
+    while (leftSubArrayIndex < leftSubArraySize) {
+      data[mergedArrayIndex] = leftSubArray[leftSubArrayIndex]
+      ++leftSubArrayIndex
+      ++mergedArrayIndex
+    }
+    
+    while (rightSubArrayIndex < rightSubArraySize) {
+      data[mergedArrayIndex] = rightSubArray[rightSubArrayIndex]
+      ++rightSubArrayIndex
+      ++mergedArrayIndex
+    }
   }
 
   render() {

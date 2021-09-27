@@ -17,7 +17,7 @@ class Navigation extends Component {
   }
 
   render() {
-    let names = ["Quick", "Selection", "Bubble", "Insertion", "Merge"]
+    let names = ["Quick", "Merge", "Insertion", "Bubble", "Selection"]
     let buttons = []
 
     for (let i = 0; i < names.length; i++) {

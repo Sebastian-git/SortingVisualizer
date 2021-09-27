@@ -10,7 +10,7 @@ class InfoLeft extends Component {
       "selection" : "Slow and inept, the algorithm repeatedly loops through a list to find the smallest element then shifts it to the front.",
       "bubble" : "",
       "insertion" : "",
-      "merge" : ""
+      "merge" : "A Divide and Conquer algorithm that divides data in half calling itself recursively until the size of each portion is 1, then merges each portion together in order. "
     }
     this.histories = {
       "quick" : "Created by British computer scientist Tony Hoare in 1959 while visiting Moscow State University. Initially, he thought the algorithm was too simple to publish but finally got around to it in 1961.",
