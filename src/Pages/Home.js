@@ -38,6 +38,8 @@ class Home extends Component {
     speedCounter : 1,
     tuneCounter : 0,
     transitionCounter : 1,
+
+    isFullscreen : false
   }
 
   constructor(props) {
@@ -347,11 +349,27 @@ class Home extends Component {
   }
 
   setFullscreen = () => {
-    let animation = document.getElementById("animation")
-    let toggle = this.state.audioControlToggle
-    animation.style.height = "56vh"
-   // elem.style.opacity = 100
-   // height: 56vh; width: 54vw;
+    const isFullscreenLocal = this.state.isFullscreen
+    if (isFullscreenLocal) {
+      document.getElementById("header").style.display = "flex"
+    
+      document.querySelectorAll(".info").forEach(infoChild=>infoChild.style.display = "initial");
+      
+      document.getElementById("animation").style.height = "56vh"
+      document.getElementById("animation").style.width = "54vw"
+    } 
+    else {
+      document.getElementById("header").style.display = "none"
+    
+      document.querySelectorAll(".info").forEach(infoChild=>infoChild.style.display = "none");
+      
+      document.getElementById("animation").style.height = "90vh"
+      document.getElementById("animation").style.width = "98vw"
+    }
+
+    this.setState({
+      isFullscreen : !isFullscreenLocal
+    })
   }
 
   playSound = async (distance) => {
@@ -652,7 +670,8 @@ class Home extends Component {
             volumeHover={this.volumeHover} 
             volumeNotHover={this.volumeNotHover} 
             updateVolume={this.updateVolume} 
-            openModal={this.openModal} />
+            openModal={this.openModal}
+            setFullscreen={this.setFullscreen} />
           </div>
 
           <InfoRight 
