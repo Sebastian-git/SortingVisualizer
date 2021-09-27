@@ -273,9 +273,7 @@ class Home extends Component {
         await this.insertionsort(tempHeights)
       }
       else if (this.state.currentAlgorithm === "merge") {
-        console.log("original:", tempHeights)
         await this.mergesort(tempHeights, 0, tempHeights.length-1)
-        console.log("sorted:", tempHeights)
       }
   
       if (this.state.isPlaying === true) await this.playAllBars()
