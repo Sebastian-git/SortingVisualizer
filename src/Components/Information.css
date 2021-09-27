@@ -13,14 +13,14 @@
     margin: 0;
     font-family: "Lucida Console";
     font-weight: 900;
-    font-size: 13px;
+    font-size: 14px;
     color: #2DE3FF;
     text-shadow: 0 0 2px #2DE3FF;
 }
 
 .infoDesc {
     margin: 16px 0 0 14px;
-    font-size: 12px;
+    font-size: 14px;
     color: #FFF0E9;
 }
 
@@ -52,5 +52,5 @@
 
 .liveInfoChild {
     margin: 16px 14px 0 14px;
-    font-size: 12px;
+    font-size: 14px;
 }
