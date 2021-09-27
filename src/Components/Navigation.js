@@ -24,9 +24,12 @@ class Navigation extends Component {
       buttons.push(
         <div className="navbarComponentWrapper">
           <label className="navbarComponent" onClick={() => this.setCurrentAlgorithm(names[i].toLowerCase())}>{names[i]}</label>
-          <div className={this.state.selectedAlgorithm === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
+          <div className={this.state.selectedAlgorithm === names[i].toLowerCase() || this.props.currentAlgorithm === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
         </div>
       )
+      if (this.props.currentAlgorithm === names[i].toLocaleLowerCase()) {
+
+      }
     }
 
     return (

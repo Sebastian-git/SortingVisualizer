@@ -66,7 +66,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.fillHeights()
-    this.setCurrentAlgorithm("insertion")
+    this.setCurrentAlgorithm("quick")
     this.fillAudioNotes()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
@@ -94,7 +94,7 @@ class Home extends Component {
   }
 
   getTime = () => {
-    return Math.abs(this.startTime - Date.now())/1000
+    return Math.floor(Math.abs(this.startTime - Date.now())/1000)
   }
 
   fillColors = () => {
@@ -237,7 +237,7 @@ class Home extends Component {
   }
 
   playAllBars = async () => {
-    this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
+    this.pastTime = Math.floor(Math.abs((Date.now() - this.startTime) / 1000))
     let delay = 2000
     for (let i = 0; i < this.state.heights.length; ++i) {
       if (!this.state.isPlaying) {    
@@ -527,6 +527,7 @@ class Home extends Component {
       await this.updateColors(i, "#FFFFFF")
 
       while (j >= 0 && data[j] > cur) {
+        this.comparisons += 1
         if (!this.state.isPlaying) return
 
         await this.playSound(data[j])
@@ -537,6 +538,7 @@ class Home extends Component {
       }
       if (data[j + 1] !== cur) {
         if (!this.state.isPlaying) return
+        this.comparisons += 1
         data[j + 1] = cur
         await this.swapColors(j + 1, i)
       }
@@ -547,6 +549,7 @@ class Home extends Component {
   mergesort = async (data, startIndex, endIndex) => {
     await this.updateHeight(data)
     if (startIndex >= endIndex) return
+    this.comparisons += 1
 
     let middleIndex = startIndex + parseInt((endIndex - startIndex) / 2)
     
@@ -595,6 +598,7 @@ class Home extends Component {
         await this.swapColors(mergedArrayIndex, data.indexOf(rightSubArray[rightSubArrayIndex]))
         await this.updateHeight(data)
       }
+      this.comparisons += 1
       ++mergedArrayIndex
     }
 
@@ -622,7 +626,7 @@ class Home extends Component {
             <p class="title" id="titleA">Sorting</p>
             <p class="title" id="titleB">Visualizer</p>  
           </div>
-          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} />
+          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} currentAlgorithm={this.state.currentAlgorithm} />
         </div>
    
         <div id="content">
