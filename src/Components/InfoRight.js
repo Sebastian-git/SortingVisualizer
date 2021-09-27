@@ -53,8 +53,8 @@ class InfoRight extends Component {
       <React.Fragment>
         <div class="info">
           <div id="infoRight">
-            <div class="infoCategory">
-              <div id="complexityWrapper">
+            <div id="complexityWrapper">
+              <div class="infoCategory">
                 <p class="infoTitle">COMPLEXITY</p>
                 <div class="infoStatWrapper">
                   <p class="infoDesc">Best time: </p>
@@ -74,8 +74,8 @@ class InfoRight extends Component {
                 </div>
               </div>
             </div>
-            <div className="infoCategory">
-              <div id="liveStatsWrapper">
+            <div id="liveStatsWrapper">
+              <div className="infoCategory">
                 <p className="infoTitle">LIVE STATS</p>
                 <div className="infoStatWrapper">
                   <p className="infoDesc">Time Elapsed:</p>
@@ -97,8 +97,8 @@ class InfoRight extends Component {
                 </div>
               </div>
             </div>
-            <div className="infoCategory">
-              <div id="tuneWrapper">
+            <div id="tuneWrapper">
+              <div className="infoCategory">
                 <p className="infoTitle">TUNE</p>
                 <div id="speedTuneContent">
                   <img className="infoArrows" src={arrowLeft} alt="Arrow left" onClick={() => this.props.decrementTune()} />
