@@ -89,32 +89,20 @@ body {
     padding: 0;
     margin: 0 4px 0;
   }
-  #titleContainer {
-    display: flex;
-    justify-content: center;
-    margin: 0 27px 0 0;
-  }
   #navbar {
-    display: flex;
-    justify-content: center;
-    color: #FFFBF9;
-    margin: 16px 24px 10px 0;
+    margin: 16px 24px;
+    justify-content: space-between;
   }
   .navbarComponent {
     padding: 0 1px;
     font-size: 12px;
   }
-  .navbarComponentWrapper {
-    width: 20%;
-  }
   #animation {
-    margin-right: 9vw;
     height: 56vh;
-    width: 82vw;
+    width: 88vw;
   }
   #taskbar {
     padding: 1px;
-    margin-right: 9vw;
   }
   .taskbarChild {
     height: 28px;
