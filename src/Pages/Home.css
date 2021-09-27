@@ -38,7 +38,7 @@ body {
 }
 
 .title {
-  font-size: 46px;
+  font-size: 50px;
   font-family: AlienEncounterSolid;
   text-shadow: 0 0 7px;
   padding: 0;
@@ -80,41 +80,29 @@ body {
   #header {
     margin: 1px;
   }
-  .info {
+  #infoLeft, #tuneWrapper, #liveStatsWrapper, #complexityWrapper, #complexity {
     display: none;
   }
   .title {
-    font-size: 28px;
+    font-size: 34px;
     text-shadow: 0 0 7px;
     padding: 0;
-    margin: 0 4px 0;
-  }
-  #titleContainer {
-    display: flex;
-    justify-content: center;
-    margin: 0 27px 0 0;
+    margin: 6px 4px 0;
   }
   #navbar {
-    display: flex;
-    justify-content: center;
-    color: #FFFBF9;
-    margin: 16px 24px 10px 0;
+    margin: 16px 0;
+    justify-content: space-between;
   }
   .navbarComponent {
     padding: 0 1px;
-    font-size: 12px;
-  }
-  .navbarComponentWrapper {
-    width: 20%;
+    font-size: 14px;
   }
   #animation {
-    margin-right: 9vw;
     height: 56vh;
-    width: 82vw;
+    width: 100%;
   }
   #taskbar {
     padding: 1px;
-    margin-right: 9vw;
   }
   .taskbarChild {
     height: 28px;
@@ -125,7 +113,29 @@ body {
   #volumeButton {
     display: none;
   }
-  #mobileSpeedWrapper {
-    /* enable here for mobile */
+  #content {
+    flex-direction: column;
+  }
+  .info {
+    margin: 0;
+    text-align: center;
+  }
+  .infoTitle {
+    font-size: 16px;
+  }
+  .liveInfoChild {
+    margin: 14px 14px 0 14px;
+  }
+  .infoCategory {
+    margin: 0;
+  }
+  #infoRight {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px 0 0 0;
+  }
+  #speedTuneContent {
+    margin: 0;
   }
 }

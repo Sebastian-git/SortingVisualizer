@@ -66,7 +66,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.fillHeights()
-    this.setCurrentAlgorithm("quick")
+    this.setCurrentAlgorithm("quicksort")
     this.fillAudioNotes()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
