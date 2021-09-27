@@ -66,7 +66,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.fillHeights()
-    this.setCurrentAlgorithm("insertion")
+    this.setCurrentAlgorithm("quicksort")
     this.fillAudioNotes()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
@@ -622,7 +622,7 @@ class Home extends Component {
             <p class="title" id="titleA">Sorting</p>
             <p class="title" id="titleB">Visualizer</p>  
           </div>
-          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} />
+          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} currentAlgorithm={this.state.currentAlgorithm} />
         </div>
    
         <div id="content">
