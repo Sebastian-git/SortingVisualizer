@@ -3,22 +3,24 @@ The following website will implement sorting algorithms with JavaScript and will
 Website is deployed live at https://visualsorting-424ef.web.app/ and a decorated readme is in progress.
 
 # <a name="title" /> Sorting Visualizer
-<hr>
 
-### Introduction
+## Introduction
+This project was inspired by the content from the YouTube channel [Timo Bingmann](https://www.youtube.com/c/TimoBingmann/videos). I hope this website can help simplify the process of understanding sorting algorithms for future students.
 
-### Usage
+"An algorithm must be seen to be believed." - Donald Knuth
+
+## Usage
 
 #### Setup
 
 #### Previews
 
-### Technical Information 
+#### Technical Information 
 
-### Launch
+## Launch
 JavaScript 1.7 <br>
 
-### Status: 
+## Status: 
 
 In Progress
 
