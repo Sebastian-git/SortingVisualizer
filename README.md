@@ -1,6 +1,3 @@
-
-Website is deployed live at https://visualsorting-424ef.web.app/ and a decorated readme is in progress.
-
 # <a name="title" /> Sorting Visualizer
 
 ## Introduction
