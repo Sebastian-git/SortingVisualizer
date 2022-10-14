@@ -22,13 +22,15 @@ class Home extends Component {
     isPlaying : false,
     isSorted : false,
     
-    maxBars : 20,
-    maxHeight : 30,
     transitionDelay : 50,
     
     colors : [],
+
+    maxBars : 10,
+    barThickness : 3,
     heights : [],
 
+    soundEffectDelay : 10,
     audioControlToggle : false,
     audioNotes : ["C", "D", "E", "F", "G", "A", "B"],
     audioNoteCombinations : [],
@@ -37,10 +39,13 @@ class Home extends Component {
     
     currentTune : "AMSynth",
     tune : new Tone.AMSynth().toDestination(),
+    
     currentSpeed : "Medium",
     speedCounter : 1,
     tuneCounter : 0,
     transitionCounter : 1,
+
+    isFullscreen : false
   }
 
   constructor(props) {
@@ -50,10 +55,12 @@ class Home extends Component {
     this.comparisons = 0
     this.startTime = Date.now()
     this.pastTime = 0
+    
+    this.maxHeight = 30
 
     this.speedOptions = ["Slow", "Medium", "Fast"]
     this.tuneOptions = ["AMSynth", "FMSynth", "M1Synth", "M2Synth"]
-    this.transitionOptions = [200, 50, 1]
+    this.speedValues = [300, 100, 1]
   }
 
   keypressListener(event) {
@@ -66,10 +73,9 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.getRandomHeights()
-    //this.setCurrentAlgorithm("quick")
+    this.fillHeights()
+    this.setCurrentAlgorithm("quicksort")
     this.fillAudioNotes()
-    this.fillColors()
     this.updateVolume()
     document.addEventListener("keydown", this.keypressListener, false);
   }
@@ -78,13 +84,30 @@ class Home extends Component {
     document.removeEventListener("keydown", this.keypressListener, false);
   }
 
+  fillHeights = () => {
+    let rand = 0
+    let temp = 0
+    let tempHeights = Array.from({length : this.state.maxBars}, (_, i) => Math.floor(i*(this.maxHeight+4)/this.state.maxBars) + 1)
+
+    for (let i = 0; i < this.state.maxBars; ++i) {
+      rand = Math.floor((Math.random() * this.state.maxBars))
+      temp = tempHeights[rand]
+      tempHeights[rand] = tempHeights[i]
+      tempHeights[i] = temp
+    }
+    this.setState({
+      heights : tempHeights
+    })
+    this.fillColors()
+  }
+
   getTime = () => {
-    return Math.abs(this.startTime - Date.now())/1000
+    return Math.floor(Math.abs(this.startTime - Date.now())/1000)
   }
 
   fillColors = () => {
     let localColors = []
-    for (let i = 0; i <= this.state.maxBars*2; i++) {
+    for (let i = 0; i <= this.state.maxBars; ++i) {
       localColors.push("#CC20A5")
     }
     this.setState({
@@ -97,16 +120,16 @@ class Home extends Component {
     let notes = []
     let total = 0
 
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 7; j++) {
+    for (let i = 0; i < 8; ++i) {
+      for (let j = 0; j < 7; ++j) {
         notes.push(this.state.audioNotes[j] + i.toString())
-        total ++
+        ++total
       }
     }
     
     this.setState({
       audioNoteCombinations : notes,
-      audioNoteCombinationStart : (total / 2) + this.state.maxBars
+      audioNoteCombinationStart : (total / 2) + (this.state.maxBars)
     })
   }
 
@@ -122,7 +145,7 @@ class Home extends Component {
         speedCounter : newCount,
         currentSpeed : this.speedOptions[newCount],
         transitionCounter : newDelay,
-        transitionDelay :  this.transitionOptions[newDelay]
+        transitionDelay :  this.speedValues[newDelay]
       })
     }
   }
@@ -139,7 +162,7 @@ class Home extends Component {
         speedCounter : newCount,
         currentSpeed : this.speedOptions[newCount],
         transitionCounter : newDelay,
-        transitionDelay :  this.transitionOptions[newDelay]
+        transitionDelay :  this.speedValues[newDelay]
       })
     }
   }
@@ -201,14 +224,17 @@ class Home extends Component {
     return tempTune
   }
 
-  getRandomHeights = () => {
-    let tempHeights = []
-    for (let i = 0; i <= this.state.maxBars*2; i ++) {
-      tempHeights.push(parseInt((Math.random() * this.state.maxHeight) + 1))
+  updateBars = async (bars) => {
+    const prevMaxBars = this.state.maxBars;
+
+    if (prevMaxBars + bars > 20 || prevMaxBars + bars < 2) {
+      return
     }
-    this.setState({
-      heights : tempHeights
+
+    await this.setState({
+      maxBars : prevMaxBars + bars
     })
+    this.restartClick()
   }
 
   setCurrentAlgorithm = async (name) => {
@@ -219,9 +245,13 @@ class Home extends Component {
   }
 
   playAllBars = async () => {
-    this.pastTime = Math.abs((Date.now() - this.startTime) / 1000)
+    this.pastTime = Math.floor(Math.abs((Date.now() - this.startTime) / 1000))
     let delay = 2000
-    for (let i = 0; i < this.state.heights.length; i++) {
+    for (let i = 0; i < this.state.heights.length; ++i) {
+      if (!this.state.isPlaying) {    
+        this.state.tune.triggerRelease()
+        return
+      }
       await this.playSound(i)
       await this.updateColors(i, "#FFFFFF", delay)
     }
@@ -246,8 +276,17 @@ class Home extends Component {
       } else if (this.state.currentAlgorithm === "bubblesort") {
         <BubbleSort />
       }
-      
-      if (this.state.isPlaying === true) this.playAllBars()
+      else if (this.state.currentAlgorithm === "bubble") {
+        await this.bubblesort(tempHeights)
+      }
+      else if (this.state.currentAlgorithm === "insertion") {
+        await this.insertionsort(tempHeights)
+      }
+      else if (this.state.currentAlgorithm === "merge") {
+        await this.mergesort(tempHeights, 0, tempHeights.length-1)
+      }
+  
+      if (this.state.isPlaying === true) await this.playAllBars()
       
       this.setState({
         isPlaying : false,
@@ -267,7 +306,7 @@ class Home extends Component {
       isPlaying : false,
       isSorted : false
     })
-    this.getRandomHeights()
+    this.fillHeights()
   }
 
   volumeHover = async () => {
@@ -317,12 +356,36 @@ class Home extends Component {
     })
   }
 
+  setFullscreen = () => {
+    const isFullscreenLocal = this.state.isFullscreen
+    if (isFullscreenLocal) {
+      document.getElementById("header").style.display = "flex"
+    
+      document.querySelectorAll(".info").forEach(infoChild=>infoChild.style.display = "initial");
+      
+      document.getElementById("animation").style.height = "56vh"
+      document.getElementById("animation").style.width = "54vw"
+    } 
+    else {
+      document.getElementById("header").style.display = "none"
+    
+      document.querySelectorAll(".info").forEach(infoChild=>infoChild.style.display = "none");
+      
+      document.getElementById("animation").style.height = "90vh"
+      document.getElementById("animation").style.width = "98vw"
+    }
+
+    this.setState({
+      isFullscreen : !isFullscreenLocal
+    })
+  }
+
   playSound = async (distance) => {
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, this.state.soundEffectDelay));
     this.state.tune.triggerRelease()
     let note = this.state.audioNoteCombinations[this.state.audioNoteCombinationStart - distance]
     
-    this.state.tune.triggerAttackRelease(note, 10);
+    this.state.tune.triggerAttackRelease(note, this.state.soundEffectDelay);
   }
 
   updateColors = async (index, newColor, delay) => {
@@ -333,9 +396,49 @@ class Home extends Component {
       colors : tempColors
     })
     
-    await new Promise(r => setTimeout(r, this.state.transitionDelay));
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 2));
     
     tempColors[index] = "#CC20A5"
+    this.setState({
+      colors : tempColors
+    })
+  }
+
+  updateMergeColors = async (index1, index2, index3, newColor, delay) => {
+    if (!delay) delay = 0
+    let tempColors = this.state.colors
+    tempColors[index1] = newColor
+    tempColors[index2] = newColor
+    tempColors[index3] = newColor
+    this.setState({
+      colors : tempColors
+    })
+    
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 2));
+    
+    tempColors[index1] = "#CC20A5"
+    tempColors[index2] = "#CC20A5"
+    tempColors[index3] = "#CC20A5"
+    this.setState({
+      colors : tempColors
+    })
+  } 
+
+  swapColors = async (index1, index2) => {
+    let tempColors = this.state.colors
+
+    tempColors[index1] = "#00FF00"
+    tempColors[index2] = "#FF0000"
+    
+    this.setState({
+      colors : tempColors
+    })
+    
+    await new Promise(r => setTimeout(r, this.state.transitionDelay * 3));
+    
+    tempColors[index1] = "#CC20A5"
+    tempColors[index2] = "#CC20A5"
+
     this.setState({
       colors : tempColors
     })
@@ -348,7 +451,7 @@ class Home extends Component {
     await new Promise(r => setTimeout(r, this.state.transitionDelay));
   }
 
-  // ALGORITHMS HERE, WILL BE MIGRATED TO INDIVIDUAL COMPONENTS SOON
+  // ALGORITHMS
   
   swap = async (data, indexOne, indexTwo) => {
     if (!this.state.isPlaying) return
@@ -359,6 +462,7 @@ class Home extends Component {
 
   quicksort = async (data, left, right) => {
     if (!this.state.isPlaying) return
+    this.comparisons += 1
     if (left < right) {
       this.comparisons += 1
       let index = await this.partition(data, left, right)
@@ -375,16 +479,17 @@ class Home extends Component {
       if (!this.state.isPlaying) return
       await this.updateColors(j, "#FFFFFF")
       await this.playSound(data[j])
+      this.comparisons += 1
       if (data[j] < pivot) {
         this.comparisons += 1
-        i++
-        await this.updateColors(i, "#00FF00")
-        await this.updateColors(j, "#FF0000")
+        ++i
+        await this.swapColors(i, j)
         this.swap(data, j, i)
         await this.updateHeight(data)
         
       }
     }
+    await this.swapColors(i+1, right)
     this.swap(data, i+1, right)
     await this.updateHeight(data)
 
@@ -398,20 +503,21 @@ class Home extends Component {
     
     while (unsorted.length > 0) {
       minIndex = 0
+      this.comparisons += 1
       if (unsorted[minIndex + 1] !== null && unsorted[minIndex] === unsorted[minIndex + 1]) {
-        this.comparisons += 1
       } else {
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; ++i) {
           if (!this.state.isPlaying) return
           await this.playSound(data[i])
           await this.updateColors(i, "#FFFFFF")
+          this.comparisons += 1
           if (unsorted[i] <= unsorted[minIndex]) {
-            this.comparisons += 1
             minIndex = i
           }
         }
       }
       
+      await this.swapColors(sorted.length, sorted.length + minIndex)
       sorted.push(unsorted.splice(minIndex, 1))
       data = sorted.concat(unsorted)
 
@@ -419,7 +525,130 @@ class Home extends Component {
     }
   }
 
+  bubblesort = async (data) => {
+    let didSwap = true
 
+    while (didSwap) {
+      didSwap = false
+
+      for (let i = 0; i < data.length; ++i) {
+        if (!this.state.isPlaying) return
+        await this.playSound(data[i])
+        await this.updateColors(i, "#FFFFFF")
+
+        this.comparisons += 1
+        if (i+1 < data.length && data[i] > data[i+1]) {
+          if (!this.state.isPlaying) return
+          await this.swap(data, i, i+1)
+          await this.swapColors(i, i+1)
+          didSwap = true
+        }
+      }
+    }
+    await this.updateHeight(data)
+  }
+
+  insertionsort = async (data) => {
+    let i, j, cur
+
+    for (i = 1; i < data.length; ++i) {
+      if (!this.state.isPlaying) return
+      
+      cur = data[i]
+      j = i - 1
+      
+      await this.playSound(data[i])
+      await this.updateColors(i, "#FFFFFF")
+
+      while (j >= 0 && data[j] > cur) {
+        this.comparisons += 1
+        if (!this.state.isPlaying) return
+
+        await this.playSound(data[j])
+        await this.updateColors(j, "#FFFFFF")
+
+        data[j + 1] = data[j]
+        j -= 1
+      }
+      if (data[j + 1] !== cur) {
+        if (!this.state.isPlaying) return
+        this.comparisons += 1
+        data[j + 1] = cur
+        await this.swapColors(j + 1, i)
+      }
+    }
+    await this.updateHeight(data)
+  }
+
+  mergesort = async (data, startIndex, endIndex) => {
+    await this.updateHeight(data)
+    if (startIndex >= endIndex) return
+    this.comparisons += 1
+
+    let middleIndex = startIndex + parseInt((endIndex - startIndex) / 2)
+    
+    await this.playSound(data[middleIndex])
+    await this.updateMergeColors(startIndex, middleIndex, endIndex, "#FFFFFF")
+    
+    if (!this.state.isPlaying) return
+    await this.mergesort(data, startIndex, middleIndex)
+    await this.mergesort(data, middleIndex + 1, endIndex)
+    await this.merge(data, startIndex, middleIndex, endIndex)
+  }
+
+  merge = async(data, startIndex, middleIndex, endIndex) => {
+    // Store values in original list from left to mid - left + 1, and from mid + 1 to right in two temp subarrays 
+    let leftSubArraySize = middleIndex - startIndex + 1
+    let rightSubArraySize = endIndex - middleIndex
+
+    let leftSubArray = new Array(leftSubArraySize)
+    let rightSubArray = new Array(rightSubArraySize)
+    
+    for (let i = 0; i < leftSubArraySize; i++) {
+      leftSubArray[i] = data[startIndex + i]
+    }
+    for (let i = 0; i < rightSubArraySize; i++) {
+      rightSubArray[i] = data[middleIndex + 1 + i]
+    }
+    
+    // Store indices of the two temp subarrays and the index of the merged array in variables
+    let leftSubArrayIndex = 0
+    let rightSubArrayIndex = 0
+    let mergedArrayIndex = startIndex
+
+    // Sort original list as temp subarrays merged with original list
+    while (leftSubArrayIndex < leftSubArraySize && rightSubArrayIndex < rightSubArraySize) {
+      if (!this.state.isPlaying) return
+      if (leftSubArray[leftSubArrayIndex] < rightSubArray[rightSubArrayIndex]) {
+        data[mergedArrayIndex] = leftSubArray[leftSubArrayIndex]
+        ++leftSubArrayIndex
+        await this.playSound(data[mergedArrayIndex])
+        await this.swapColors(mergedArrayIndex, data.indexOf(leftSubArray[leftSubArrayIndex]))
+        await this.updateHeight(data)
+      } else {
+        data[mergedArrayIndex] = rightSubArray[rightSubArrayIndex]
+        ++rightSubArrayIndex
+        await this.playSound(data[mergedArrayIndex])
+        await this.swapColors(mergedArrayIndex, data.indexOf(rightSubArray[rightSubArrayIndex]))
+        await this.updateHeight(data)
+      }
+      this.comparisons += 1
+      ++mergedArrayIndex
+    }
+
+    // Copy remaining elements of left & right subarray if they exist
+    while (leftSubArrayIndex < leftSubArraySize) {
+      data[mergedArrayIndex] = leftSubArray[leftSubArrayIndex]
+      ++leftSubArrayIndex
+      ++mergedArrayIndex
+    }
+    
+    while (rightSubArrayIndex < rightSubArraySize) {
+      data[mergedArrayIndex] = rightSubArray[rightSubArrayIndex]
+      ++rightSubArrayIndex
+      ++mergedArrayIndex
+    }
+  }
 
   render() {
 
@@ -431,7 +660,7 @@ class Home extends Component {
             <p class="title" id="titleA">Sorting</p>
             <p class="title" id="titleB">Visualizer</p>  
           </div>
-          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} />
+          <Navbar setCurrentAlgorithm={this.setCurrentAlgorithm} currentAlgorithm={this.state.currentAlgorithm} />
         </div>
    
         <div id="content">
@@ -441,7 +670,7 @@ class Home extends Component {
           <div id="animationWrapper">
 
             <div id="animation">
-              {animate(this.state.maxBars, this.state.heights, this.state.colors)}
+              {animate(this.state.maxBars, this.state.heights, this.state.colors, this.state.barThickness)}
             </div>
             
             <Taskbar 
@@ -450,30 +679,28 @@ class Home extends Component {
             volumeHover={this.volumeHover} 
             volumeNotHover={this.volumeNotHover} 
             updateVolume={this.updateVolume} 
-            openModal={this.openModal} 
-            />
-            
+            openModal={this.openModal}
+            setFullscreen={this.setFullscreen} />
           </div>
 
           <InfoRight 
           alg={this.state.currentAlgorithm} 
           comparisons={this.comparisons} 
-          timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} 
-          currentSpeed={this.state.currentSpeed} 
+          timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} currentSpeed={this.state.currentSpeed} 
           currentTune={this.state.currentTune} 
           incrementSpeed={this.incrementSpeed} 
           decrementSpeed={this.decrementSpeed} 
           incrementTune={this.incrementTune} 
-          decrementTune={this.decrementTune} 
-          />
+          decrementTune={this.decrementTune}
+          updateBars={this.updateBars}
+          maxBars={this.state.maxBars} />
+        </div>
 
-          </div>
-
-          <div id="footer">
-            <a href="https://github.com/Sebastian-git/SortingVisualizer">
-              <img class="footerChild" src={githubImage} alt="github"/>
-            </a>
-          </div>
+        <div id="footer">
+          <a href="https://github.com/Sebastian-git/SortingVisualizer">
+            <img class="footerChild" src={githubImage} alt="github"/>
+          </a>
+        </div>
         
       </React.Fragment>
     );

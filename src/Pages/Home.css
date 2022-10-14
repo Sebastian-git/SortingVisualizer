@@ -2,6 +2,13 @@ body {
   background: #130b1a;
   background-repeat: no-repeat;
   background-size: cover;
+  
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none; 
+   -khtml-user-select: none; 
+     -moz-user-select: none; 
+      -ms-user-select: none; 
+          user-select: none;
 }
 
 #header {
@@ -35,7 +42,7 @@ body {
   font-family: AlienEncounterSolid;
   text-shadow: 0 0 7px;
   padding: 0;
-  margin: 0 10px 4vh;
+  margin: 0 10px 3vh;
 }
 
 #titleA {
@@ -64,13 +71,80 @@ body {
   height: 56vh;
   width: 54vw;
 }
+
+#mobileSpeedWrapper {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  #header {
+    margin: 1px;
+  }
+  #infoLeft, #tuneWrapper, #liveStatsWrapper, #complexityWrapper, #complexity {
+    display: none;
+  }
+  .title {
+    font-size: 34px;
+    text-shadow: 0 0 7px;
+    padding: 0;
+    margin: 6px 4px 0;
+  }
+  #navbar {
+    margin: 16px 0;
+    justify-content: space-between;
+  }
+  .navbarComponent {
+    padding: 0 1px;
+    font-size: 14px;
+  }
+  #animation {
+    height: 56vh;
+    width: 100%;
+  }
+  #taskbar {
+    padding: 1px;
+  }
+  .taskbarChild {
+    height: 28px;
+  }
+  #volume {
+    display: none;
+  }
+  #volumeButton {
+    display: none;
+  }
+  #content {
+    flex-direction: column;
+  }
+  .info {
+    margin: 0;
+    text-align: center;
+  }
+  .infoTitle {
+    font-size: 16px;
+  }
+  .liveInfoChild {
+    margin: 14px 14px 0 14px;
+  }
+  .infoCategory {
+    margin: 0;
+  }
+  #infoRight {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px 0 0 0;
+  }
+  #speedTuneContent {
+    margin: 0;
+  }
+}
 #footer {
-  margin: 4vh;
   display: flex;
-  flex-direction: row;
   justify-content: center;
 }
 .footerChild {
+  margin: 3vh;
   cursor: pointer;
   height: 40px;
   object-fit: cover;

@@ -17,16 +17,19 @@ class Navigation extends Component {
   }
 
   render() {
-    let names = ["Quick", "Selection", "Bubble", "Insertion", "Merge"]
+    let names = ["Quick", "Merge", "Insertion", "Bubble", "Selection"]
     let buttons = []
 
     for (let i = 0; i < names.length; i++) {
       buttons.push(
         <div className="navbarComponentWrapper">
           <label className="navbarComponent" onClick={() => this.setCurrentAlgorithm(names[i].toLowerCase())}>{names[i]}</label>
-          <div className={this.state.selectedAlgorithm === names[i].toLowerCase() ? "glowbarOn" : "glowbarOff"}/>
+          <div className={this.state.selectedAlgorithm === names[i].toLowerCase() || this.props.currentAlgorithm === names[i].toLowerCase()+"sort" ? "glowbarOn" : "glowbarOff"}/>
         </div>
       )
+      if (this.props.currentAlgorithm === names[i].toLowerCase()+"sort") {
+        this.setCurrentAlgorithm(names[i].toLowerCase())
+      }
     }
 
     return (

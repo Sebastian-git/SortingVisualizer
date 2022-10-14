@@ -6,21 +6,21 @@
 }
 
 .infoCategory {
-    margin-bottom: 18%;
+    margin-bottom: 12%;
 }
 
 .infoTitle {
     margin: 0;
     font-family: "Lucida Console";
     font-weight: 900;
-    font-size: 15px;
+    font-size: 14px;
     color: #2DE3FF;
     text-shadow: 0 0 2px #2DE3FF;
 }
 
 .infoDesc {
     margin: 16px 0 0 14px;
-    font-size: 13px;
+    font-size: 14px;
     color: #FFF0E9;
 }
 
@@ -38,23 +38,19 @@
 
 .infoArrows {
     cursor: pointer;
-    height: 22px;
+    height: 18px;
     object-fit: cover;
-    margin: 16px 0 0 14px;
+    margin: 12px 0 0;
 }
 
 #speedTuneContent {
     display: flex;
     color: white;
     justify-content: space-between;
+    margin: 0 15%;
 }
 
 .liveInfoChild {
-    margin: 18px 0 0 14px;
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Old versions of Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none;
+    margin: 16px 14px 0 14px;
+    font-size: 14px;
 }
