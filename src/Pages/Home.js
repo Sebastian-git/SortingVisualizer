@@ -2,10 +2,16 @@ import React, { Component } from "react"
 import * as Tone from 'tone'
 
 import { animate } from "../Components/Animation"
+
 import Navbar from "../Components/Navigation"
 import Taskbar from "../Components/Taskbar"
+
 import InfoLeft from "../Components/InfoLeft"
 import InfoRight from "../Components/InfoRight"
+
+import BubbleSort from "../Algorithms/BubbleSort"
+
+import githubImage from '../imgs/githubImage.png'
 
 import "./Home.css"
 
@@ -237,6 +243,8 @@ class Home extends Component {
       }
       else if (this.state.currentAlgorithm === "selection") {
         await this.selectionsort(tempHeights)
+      } else if (this.state.currentAlgorithm === "bubblesort") {
+        <BubbleSort />
       }
       
       if (this.state.isPlaying === true) this.playAllBars()
@@ -411,6 +419,8 @@ class Home extends Component {
     }
   }
 
+
+
   render() {
 
     return (
@@ -429,15 +439,40 @@ class Home extends Component {
           <InfoLeft alg={this.state.currentAlgorithm}/>
           
           <div id="animationWrapper">
+
             <div id="animation">
               {animate(this.state.maxBars, this.state.heights, this.state.colors)}
             </div>
             
-            <Taskbar restartClick={this.restartClick} playClick={this.playClick} volumeHover={this.volumeHover} volumeNotHover={this.volumeNotHover} updateVolume={this.updateVolume} openModal={this.openModal} />
+            <Taskbar 
+            restartClick={this.restartClick} 
+            playClick={this.playClick} 
+            volumeHover={this.volumeHover} 
+            volumeNotHover={this.volumeNotHover} 
+            updateVolume={this.updateVolume} 
+            openModal={this.openModal} 
+            />
+            
           </div>
 
-          <InfoRight alg={this.state.currentAlgorithm} comparisons={this.comparisons} timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} currentSpeed={this.state.currentSpeed} currentTune={this.state.currentTune} incrementSpeed={this.incrementSpeed} decrementSpeed={this.decrementSpeed} incrementTune={this.incrementTune} decrementTune={this.decrementTune} />
+          <InfoRight 
+          alg={this.state.currentAlgorithm} 
+          comparisons={this.comparisons} 
+          timeElapsed={this.state.isPlaying ? this.getTime() : this.pastTime} 
+          currentSpeed={this.state.currentSpeed} 
+          currentTune={this.state.currentTune} 
+          incrementSpeed={this.incrementSpeed} 
+          decrementSpeed={this.decrementSpeed} 
+          incrementTune={this.incrementTune} 
+          decrementTune={this.decrementTune} 
+          />
 
+          </div>
+
+          <div id="footer">
+            <a href="https://github.com/Sebastian-git/SortingVisualizer">
+              <img class="footerChild" src={githubImage} alt="github"/>
+            </a>
           </div>
         
       </React.Fragment>

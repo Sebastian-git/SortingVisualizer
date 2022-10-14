@@ -64,3 +64,15 @@ body {
   height: 56vh;
   width: 54vw;
 }
+#footer {
+  margin: 4vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.footerChild {
+  cursor: pointer;
+  height: 40px;
+  object-fit: cover;
+  padding: 0 10px;
+}
